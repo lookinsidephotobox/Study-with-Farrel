@@ -995,25 +995,29 @@
         <div style="margin-bottom: 2rem;">
     `;
 
+            // 1. The Questions
             quizQuestions.forEach((q, i) => {
                 html += `
-        <div style="margin-bottom: 2rem; page-break-inside: avoid;">
-          <p style="font-weight: bold; margin-bottom: 0.5rem; line-height: 1.4; font-size: 1.05rem;">${i + 1}. ${q.text}</p>
-          <div style="border: 1px solid #aaa; border-radius: 4px; height: 6rem; width: 100%; background: #fdfdfd; margin-top: 0.5rem;"></div>
+        <div style="margin-bottom: 1.5rem; page-break-inside: avoid;">
+          <p style="font-weight: bold; margin-bottom: 0.5rem;">${i + 1}. ${q.text}</p>
+          <div style="padding-left: 1.5rem; height: 15mm; border: 1px solid #ccc; background: #fff; border-radius: 4px;"></div>
         </div>
       `;
             });
 
-            html += `</div><div class="page-break"></div>`;
+            html += `</div>`; // end questions
+            html += `<div class="page-break"></div>`;
 
+            // 2. Answers and Explanations
             html += `
-        <h2 style="border-bottom: 1px solid #000; padding-bottom: 0.5rem; margin-bottom: 1.5rem;">Kunci Jawaban & Pembahasan</h2>
+        <h2 style="border-bottom: 1px solid #000; padding-bottom: 0.5rem; margin-bottom: 1.5rem;">Kunci Jawaban & Pembahasan (Isian)</h2>
     `;
 
             quizQuestions.forEach((q, i) => {
+                const refAnswer = (q.accepted_keywords && q.accepted_keywords.length > 0) ? q.accepted_keywords[0] : "Lihat Penjelasan";
                 html += `
         <div style="margin-bottom: 1.5rem; page-break-inside: avoid;">
-          <p style="font-weight: bold;">${i + 1}. Jawaban Referensi: ${q.accepted_keywords[0]}</p>
+          <p style="font-weight: bold;">${i + 1}. Jawaban Referensi: ${refAnswer}</p>
           <p style="font-style: italic; font-size: 0.9em; margin-top: 0.3rem;">Penjelasan: ${q.explanation}</p>
         </div>
       `;
@@ -1031,7 +1035,7 @@
         function downloadPDF() {
             // 0. Build content based on selected filter
             const filter = materialFilter.value;
-            quizQuestions = filter === 'all' ? bank : bank.filter(q => q.cat === filter);
+            quizQuestions = filter === 'all' ? isianBank : isianBank.filter(q => q.cat === filter);
             const printableHtml = buildPrintFriendlyContent();
 
             // 1. Open new window for native printing
