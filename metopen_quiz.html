@@ -1075,18 +1075,18 @@
             quizQuestions = filter === 'all' ? bank : bank.filter(q => q.cat === filter);
             buildPrintFriendlyContent();
 
-            // 1. Scroll to top - CRITICAL for mobile capture accuracy
+            // 1. Scroll to top
             window.scrollTo(0, 0);
 
             const element = document.getElementById('print-only-content');
 
-            // 2. Prepare isolated element styling
+            // 2. Show element WITHOUT position:absolute (position:absolute causes height=0 cloning bug)
             element.style.display = 'block';
             element.style.width = '800px';
-            element.style.position = 'absolute';
-            element.style.top = '0';
-            element.style.left = '0';
-            element.style.zIndex = '9999';
+            element.style.position = '';
+            element.style.top = '';
+            element.style.left = '';
+            element.style.zIndex = '';
             element.style.backgroundColor = '#ffffff';
 
             var opt = {
@@ -1096,17 +1096,17 @@
                 html2canvas: {
                     scale: 2,
                     useCORS: true,
-                    logging: true,
+                    logging: false,
                     backgroundColor: '#ffffff',
-                    width: 800,           // Force width of the capture
-                    windowWidth: 800,     // Force virtual window width
-                    scrollY: 0            // Ensure no vertical offset
+                    scrollY: 0,
+                    windowWidth: element.scrollWidth,
+                    windowHeight: element.scrollHeight
                 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
                 pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
             };
 
-            // 3. Generate and cleanup - Add small delay so DOM can paint
+            // 3. Small delay to allow DOM paint, then generate
             setTimeout(() => {
                 html2pdf().set(opt).from(element).save().then(() => {
                     element.style.display = 'none';
