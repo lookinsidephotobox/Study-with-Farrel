@@ -1034,9 +1034,7 @@
         }
 
         function downloadPDF() {
-            // 0. Build content based on selected filter
-            const filter = materialFilter.value;
-            quizQuestions = filter === 'all' ? isianBank : isianBank.filter(q => q.cat === filter);
+            // Use already populated quizQuestions (session questions)
             const printableHtml = buildPrintFriendlyContent();
 
             // 1. Prepare hidden container
