@@ -740,11 +740,13 @@
                 pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
             };
 
-            // 3. Generate and cleanup
-            html2pdf().set(opt).from(element).save().then(() => {
-                element.style.display = 'none';
-                element.style.position = '';
-            });
+            // 3. Generate and cleanup - Add small delay so DOM can paint
+            setTimeout(() => {
+                html2pdf().set(opt).from(element).save().then(() => {
+                    element.style.display = 'none';
+                    element.style.position = '';
+                });
+            }, 500);
         }
 
         // --- PWA Service Worker Registration ---
