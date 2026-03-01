@@ -13,11 +13,9 @@
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
         rel="stylesheet">
     <!-- html2pdf for PDF generation -->
-    <!-- No more html2pdf.js needed, using window.print() -->
+    <!-- html2pdf/html2canvas removed for native iframe printing (more robust) -->
     <!-- canvas-confetti for celebration -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <!-- html2canvas and jsPDF for PDF generation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="question_bank_100.js"></script>
 
     <style>
@@ -935,10 +933,19 @@
         }
 
         // --- Audio & Visual Helpers ---
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
 
         function playTone(freq, type, duration, vol) {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
+            initAudio();
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.type = type;
@@ -1078,48 +1085,50 @@
             // Use already populated quizQuestions (session questions)
             const printableHtml = buildPrintFriendlyContent();
 
-            // 1. Create a temporary, detached container for clean capture
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = printableHtml;
+            // Create a hidden iframe for high-resolution native printing
+            const iframe = document.createElement('iframe');
+            iframe.style.position = 'fixed';
+            iframe.style.right = '0';
+            iframe.style.bottom = '0';
+            iframe.style.width = '0';
+            iframe.style.height = '0';
+            iframe.style.border = '0';
+            document.body.appendChild(iframe);
 
-            // Force styles to ensure html2canvas/jsPDF get accurate measurements
-            Object.assign(tempDiv.style, {
-                position: 'absolute',
-                left: '-9999px',
-                top: '0',
-                width: '800px',
-                background: 'white',
-                color: 'black',
-                zIndex: '-1',
-                padding: '0',
-                margin: '0'
-            });
-            document.body.appendChild(tempDiv);
-
-            const opt = {
-                margin: [10, 10, 20, 10],
-                filename: 'Kuis_Metopen_P1_P5.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: {
-                    scale: 2,
-                    useCORS: true,
-                    logging: false,
-                    letterRendering: true,
-                    scrollY: 0,
-                    scrollX: 0
-                },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-            };
-
-            // 2. Generate PDF from the detached element
-            html2pdf().set(opt).from(tempDiv).save().then(() => {
-                document.body.removeChild(tempDiv);
-            }).catch(err => {
-                console.error("PDF generation error:", err);
-                if (document.body.contains(tempDiv)) document.body.removeChild(tempDiv);
-                alert("Gagal membuat PDF. Silakan coba lagi.");
-            });
+            const doc = iframe.contentWindow.document;
+            doc.open();
+            doc.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Kuis Metopen</title>
+                    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+                    <style>
+                        body { font-family: 'DM Sans', sans-serif; padding: 20px; color: #000; }
+                        h1 { color: #000; border-bottom: 2px solid #000; padding-bottom: 10px; text-align: center; }
+                        .page-break { page-break-after: always; }
+                        @page { margin: 20mm; }
+                    </style>
+                </head>
+                <body>
+                    ${printableHtml}
+                    <script>
+                        window.onload = function() {
+                            if (document.fonts) {
+                                document.fonts.ready.then(() => {
+                                    window.print();
+                                    setTimeout(() => { window.frameElement.remove(); }, 1000);
+                                });
+                            } else {
+                                window.print();
+                                setTimeout(() => { window.frameElement.remove(); }, 1000);
+                            }
+                        };
+                    <` + `/script>
+                </body>
+                </html>
+            `);
+            doc.close();
         }
 
         // --- PWA Service Worker Registration ---
