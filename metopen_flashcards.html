@@ -723,13 +723,13 @@
 
             const element = document.getElementById('print-only-content');
 
-            // 2. Show element WITHOUT position:absolute (fixes height=0 cloning bug)
+            // 2. Use position:fixed off-screen so height is correctly calculated
             element.style.display = 'block';
             element.style.width = '800px';
-            element.style.position = '';
-            element.style.top = '';
-            element.style.left = '';
-            element.style.zIndex = '';
+            element.style.position = 'fixed';
+            element.style.top = '0';
+            element.style.left = '-9999px';
+            element.style.zIndex = '9999';
             element.style.backgroundColor = '#ffffff';
 
             var opt = {
@@ -742,17 +742,18 @@
                     logging: false,
                     backgroundColor: '#ffffff',
                     scrollY: 0,
-                    windowWidth: element.scrollWidth,
-                    windowHeight: element.scrollHeight
+                    windowWidth: 800
                 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
                 pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
             };
 
-            // 3. Small delay to allow DOM paint, then generate
+            // 3. Short delay so browser paints the element, then generate
             setTimeout(() => {
                 html2pdf().set(opt).from(element).save().then(() => {
                     element.style.display = 'none';
+                    element.style.position = '';
+                    element.style.left = '';
                 });
             }, 1000);
         }
