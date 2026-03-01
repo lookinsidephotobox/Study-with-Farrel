@@ -22,6 +22,11 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
+    // DO NOT intercept blob: or data: URLs (Fixes PDF UUID download bug)
+    if (event.request.url.startsWith('blob:') || event.request.url.startsWith('data:')) {
+        return;
+    }
+
     event.respondWith(
         caches.match(event.request).then(response => {
             // return cached version or fetch from network
