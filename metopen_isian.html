@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isian Singkat — Metodologi Penelitian</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <!-- html2pdf for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --ink: #0f0e0b;
+            --paper: #f5f0e8;
+            --cream: #ede8da;
+            --accent: #c8401e;
+            --gold: #b8923a;
+            --muted: #6b6456;
+            --light: #faf8f3;
+            --card-bg: #ffffff;
+            --border: #d4cdbf;
+            --tag-bg: #f0ebe0;
+            --wrong: #e74c3c;
+            --correct: #2ecc71;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--paper);
+            color: var(--ink);
+            min-height: 100vh;
+        }
+
+        header {
+            background: var(--ink);
+            padding: 2rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 255, 255, 0.02) 10px, rgba(255, 255, 255, 0.02) 20px);
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            color: #fff;
+            line-height: 1.1;
+        }
+
+        header h1 span {
+            color: var(--gold);
+        }
+
+        nav {
+            background: var(--cream);
+            border-bottom: 2px solid var(--border);
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav a {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--accent);
+            padding: 0.5rem 1rem;
+            border: 1.5px solid var(--accent);
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        nav a:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem 4rem;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1.5px solid var(--border);
+            border-radius: 6px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 1rem;
+            color: var(--ink);
+        }
+
+        p {
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .setup-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .setup-form label {
+            font-weight: 600;
+        }
+
+        .setup-form input {
+            padding: 0.75rem;
+            border: 1.5px solid var(--border);
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: inherit;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .btn {
+            background: var(--ink);
+            color: #fff;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: inherit;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: var(--gold);
+        }
+
+        .btn:disabled {
+            background: var(--muted);
+            cursor: not-allowed;
+        }
+
+        .btn-accent {
+            background: var(--accent);
+        }
+
+        .btn-accent:hover {
+            background: #a83214;
+        }
+
+        /* Quiz Layout */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px dashed var(--border);
+        }
+
+        .score-badge {
+            background: var(--gold);
+            color: #fff;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .question-container {
+            margin-bottom: 2rem;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            background: var(--light);
+            border: 1.5px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option:hover {
+            background: var(--tag-bg);
+            border-color: var(--gold);
+        }
+
+        .option.selected {
+            background: #fffcf5;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 1px var(--gold);
+        }
+
+        .option.correct-review {
+            background: #ebf9f1;
+            border-color: var(--correct);
+        }
+
+        .option.wrong-review {
+            background: #fdf2f0;
+            border-color: var(--wrong);
+        }
+
+        .option.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .option-letter {
+            font-weight: 700;
+            color: var(--accent);
+            margin-right: 1rem;
+            font-family: 'DM Mono', monospace;
+        }
+
+        .text-input-answer {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-family: inherit;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            background: var(--light);
+            transition: all 0.2s;
+            margin-top: 1rem;
+            resize: vertical;
+        }
+
+        .text-input-answer:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(184, 146, 58, 0.1);
+        }
+
+        .quiz-tools {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .tool-btn {
+            background: var(--cream);
+            color: var(--ink);
+            border: 1.5px solid var(--border);
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tool-btn:hover {
+            background: var(--tag-bg);
+        }
+
+        .tool-btn i {
+            color: var(--accent);
+            font-style: normal;
+            font-weight: 900;
+        }
+
+        .hint-box {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #fff8f0;
+            border-left: 4px solid var(--gold);
+            font-size: 0.9rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        /* Result Screen */
+        .result-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .final-score {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            color: var(--accent);
+            line-height: 1;
+            margin: 1rem 0;
+        }
+
+        .study-card {
+            background: var(--light);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .study-card.gold {
+            border-left-color: var(--gold);
+        }
+
+        .study-card h4 {
+            font-family: 'DM Mono', monospace;
+            color: var(--muted);
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .study-card .q-text {
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        .study-card .explanation {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            background: #fff;
+            padding: 1rem;
+            border: 1px dashed var(--border);
+        }
+
+        /* Print Styles hiding UI elements */
+        @media print {
+            body {
+                background: #fff;
+                color: #000;
+            }
+
+            nav,
+            .quiz-tools,
+            .nav-buttons,
+            #btn-download {
+                display: none !important;
+            }
+
+            .card {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                margin-bottom: 0;
+            }
+
+            header {
+                background: none;
+                color: #000;
+                padding: 0 0 1rem;
+                border-bottom: 2px solid #000;
+            }
+
+            header h1,
+            header p,
+            header span {
+                color: #000;
+            }
+
+            #pdf-wrapper {
+                padding: 0;
+            }
+
+            .page-break {
+                page-break-before: always;
+            }
+        }
+
+        /* Print-specific layout container */
+        #pdf-wrapper {
+            background: #fff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Isian Singkat <span>Metopen</span></h1>
+    </header>
+
+    <nav>
+        <a href="index.html">🏠 Menu Utama</a>
+        <a href="metopen_study_cards.html" style="margin-left:1rem;">← Kembali ke Kartu Belajar</a>
+        <a href="metopen_flashcards.html" style="margin-left:1rem;">🧠 Flashcards</a>
+    </nav>
+
+    <main id="main">
+
+        <!-- SCREEN 1: SETUP -->
+        <div id="screen-setup" class="screen active card">
+            <h2>Konfigurasi Isian Singkat</h2>
+            <p>Generate soal isian singkat acak dari materi P1 s/d P5 Metodologi Penelitian.<br>Fitur alat bantu (Hint)
+                tersedia dengan penalti skor.</p>
+
+            <div class="setup-form">
+                <div>
+                    <label for="num-questions">Jumlah Pertanyaan:</label>
+                    <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 0.5rem;">Total bank soal tersedia:
+                        <span id="max-q">15</span>
+                    </p>
+                    <input type="number" id="num-questions" min="1" max="15" value="10">
+                </div>
+                <div>
+                    <button class="btn" onclick="startQuiz()">Mulai Isian Singkat</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 2: ACTIVE QUIZ -->
+        <div id="screen-quiz" class="screen card">
+            <div class="quiz-header">
+                <div style="font-family: 'DM Mono', monospace; font-weight: 500;">Pertanyaan <span
+                        id="current-q-num">1</span> dari <span id="total-q-num">10</span></div>
+                <div class="score-badge">Skor: <span id="live-score">100</span></div>
+            </div>
+
+            <div class="question-container" id="q-container">
+                <!-- Injected by JS -->
+            </div>
+
+            <div class="quiz-tools">
+                <button class="tool-btn" id="btn-hint" onclick="useHint()"><i>💡</i> Hint (-5 Poin)</button>
+            </div>
+
+            <div class="hint-box" id="hint-box"></div>
+
+            <div class="nav-buttons">
+                <button class="btn" id="btn-next" onclick="nextQuestion()">Selanjutnya →</button>
+                <button class="btn btn-accent" id="btn-finish" onclick="finishQuiz()" style="display:none;">Selesaikan
+                    Isian Singkat</button>
+            </div>
+        </div>
+
+        <!-- SCREEN 3: RESULT & STUDY CARDS -->
+        <div id="screen-result" class="screen">
+            <div id="pdf-wrapper">
+                <div class="card result-header" style="text-align: center;">
+                    <h2>Hasil Isian Singkat Anda</h2>
+                    <div class="final-score" id="final-score">85</div>
+                    <p>Skor maksimal: <span id="max-score">100</span></p>
+                    <button class="btn btn-accent" id="btn-download" onclick="downloadPDF()"
+                        style="margin-top: 1rem; width: 100%; max-width: 300px;">🖨 Unduh PDF (Soal + Jawaban)</button>
+
+                    <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+                        <img src="WhatsApp Image 2026-03-01 at 19.41.58.jpeg" alt="Farrel Ananta"
+                            style="width: 100%; max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: block;">
+                        <h3>Terima kasih sudah belajar, Let's Connect!</h3>
+                        <div
+                            style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
+                            <a href="https://www.linkedin.com/in/farrelanantaputra/" target="_blank"
+                                style="display: inline-block; background: #0077b5; color: white; text-decoration: none; padding: 0.8rem 1.2rem; border-radius: 4px; font-weight: 600; transition: opacity 0.2s;">
+                                🔗 LinkedIn
+                            </a>
+                            <a href="https://www.instagram.com/aktr.farrel/" target="_blank"
+                                style="display: inline-block; background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: white; text-decoration: none; padding: 0.8rem 1.2rem; border-radius: 4px; font-weight: 600; transition: opacity 0.2s;">
+                                Instagram
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="review-container" class="card" style="padding: 1.5rem;">
+                    <h3>Kartu Pembelajaran (Review)</h3>
+                    <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 1.5rem;">Evaluasi dari soal yang
+                        dijawab salah atau dibantu.</p>
+                    <div id="study-cards-list"></div>
+                </div>
+
+                <!-- Hidden Print Append area for PDF generation -->
+                <div id="print-only-content" style="display:none;"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // QUESTION BANK
+        const bank = [
+    {
+        "id": "q1",
+        "cat": "P1",
+        "text": "Apa tujuan penelitian menurut Prof. Sugiyono yang bertujuan untuk memperdalam dan memperluas pengetahuan yang telah ada?",
+        "accepted_keywords": [
+            "pengembangan"
+        ],
+        "hint": "Tiga tujuan menurut Prof. Sugiyono adalah penemuan, pembuktian, dan pengembangan. Memperluas berhubungan dengan meng-kembangkan sesuatu.",
+        "explanation": "Pengembangan bertujuan memperdalam dan memperluas pengetahuan yang telah ada, berbeda dengan penemuan (hal baru) dan pembuktian (menguji keraguan)."
+    },
+    {
+        "id": "q2",
+        "cat": "P1",
+        "text": "Sebutkan tahap pertama dalam proses Scientific Research!",
+        "accepted_keywords": [
+            "formulasi",
+            "topik",
+            "formulasi topik"
+        ],
+        "hint": "Langkah pertama sebelum melakukan hal lain dalam riset adalah menentukan apa yang mau dibahas.",
+        "explanation": "8 Langkah Scientific Research diawali dengan Formulasi Topik, kemudian Hipotesis, Definisi Konseptual, Operasional, Pengumpulan Data, Analisis, Uji, dan Kesimpulan."
+    },
+    {
+        "id": "q3",
+        "cat": "P1",
+        "text": "Metode apa yang paling cocok digunakan untuk Penelitian dasar (Basic Research) yang berfokus pada penemuan ilmu baru?",
+        "accepted_keywords": [
+            "eksperimen",
+            "kualitatif",
+            "eksperimen  kualitatif"
+        ],
+        "hint": "Cocok dengan eksperimen di lab dan pendekatan yang meneliti fenomena alamiah/artistik untuk ilmu baru.",
+        "explanation": "Basic research (penemuan ilmu baru) paling cocok dengan metode Eksperimen & Kualitatif."
+    },
+    {
+        "id": "q4",
+        "cat": "P2",
+        "text": "Bagaimana sifat realitas pada metode Kualitatif dalam aksioma penelitian?",
+        "accepted_keywords": [
+            "ganda",
+            "holistik",
+            "dinamis",
+            "ganda holistik dinamis"
+        ],
+        "hint": "Bukan sesuatu yang terukur secara pasti dan tunggal, melainkan hasil konstruksi pemahaman yang luas.",
+        "explanation": "Menurut perbandingan aksioma, metode kualitatif melihat realitas sebagai ganda, holistik, dinamis, hasil konstruksi & pemahaman (sedangkan kuantitatif konkrit & terukur)."
+    },
+    {
+        "id": "q5",
+        "cat": "P2",
+        "text": "Apa sebutan untuk variabel yang secara teoritis mempengaruhi (memperkuat atau memperlemah) hubungan antara variabel independen dan dependen?",
+        "accepted_keywords": [
+            "moderator"
+        ],
+        "hint": "Dia punya fungsi untuk memoderasi hubungan antara sebab dan akibat.",
+        "explanation": "Variabel Moderator adalah variabel yang mempengaruhi (memperkuat/memperlemah) hubungan antara IV dan DV dan dapat diukur. (Intervening tidak dapat diukur/diamati langsung)."
+    },
+    {
+        "id": "q6",
+        "cat": "P2",
+        "text": "Apa jenis rumusan masalah yang menanyakan hubungan antara dua variabel atau lebih?",
+        "accepted_keywords": [
+            "asosiatif"
+        ],
+        "hint": "Berasal dari kata asosiasi (hubungan/keterkaitan).",
+        "explanation": "Asosiatif adalah rumusan masalah yang menanyakan hubungan dua variabel/lebih (contoh: hubungan antara motivasi belajar dan indeks prestasi)."
+    },
+    {
+        "id": "q7",
+        "cat": "P3",
+        "text": "Apa nama teknik pengambilan sampel yang memberikan peluang yang sama bagi setiap anggota populasi untuk dipilih?",
+        "accepted_keywords": [
+            "probability",
+            "sampling",
+            "probability sampling"
+        ],
+        "hint": "Teknik ini menekankan 'peluang' atau probabilitas yang setara.",
+        "explanation": "Probability Sampling adalah teknik yang memberikan peluang sama bagi setiap anggota populasi untuk dipilih (contoh: Simple Random Sampling)."
+    },
+    {
+        "id": "q8",
+        "cat": "P3",
+        "text": "Berapa ukuran/jumlah sampel yang layak dalam penelitian eksperimen sederhana untuk grup eksperimen dan grup kontrol masing-masing menurut Roscoe (1982)?",
+        "accepted_keywords": [
+            "orang",
+            "10  20 orang"
+        ],
+        "hint": "Angkanya jauh lebih kecil dibandingkan ukuran kelayakan secara umum (30-500).",
+        "explanation": "Untuk eksperimen sederhana (kelompok eksperimen + kontrol), Roscoe menyarankan ukuran sampel yang kecil/layak yakni masing-masing 10–20 orang."
+    },
+    {
+        "id": "q9",
+        "cat": "P3",
+        "text": "Kapan hipotesis statistik digunakan dalam sebuah penelitian?",
+        "accepted_keywords": [
+            "sampel"
+        ],
+        "hint": "Statistik inferensial digunakan untuk menggeneralisasi sebagian data ke keseluruhan data.",
+        "explanation": "Hipotesis statistik digunakan HANYA jika penelitian bekerja menggunakan sampel, untuk membedakan apakah nilai sampel merepresentasikan populasi parameternya."
+    },
+    {
+        "id": "q10",
+        "cat": "P4",
+        "text": "Hipotesis yang menyatakan 'Adanya perbedaan penghasilan yang signifikan antara petani dan nelayan' termasuk dalam jenis hipotesis apa?",
+        "accepted_keywords": [
+            "komparatif"
+        ],
+        "hint": "Membandingkan dua kelompok yang berbeda (komparasi).",
+        "explanation": "Hipotesis komparatif adalah dugaan tentang perbedaan suatu variabel padampel/populasi yang berbeda (petani vs nelayan)."
+    },
+    {
+        "id": "q11",
+        "cat": "P4",
+        "text": "Metode analisis data statistik apa yang paling tepat digunakan jika rumusan masalahnya adalah Asosiatif (mencari hubungan)?",
+        "accepted_keywords": [
+            "korelasi",
+            "dan",
+            "regresi",
+            "korelasi dan regresi"
+        ],
+        "hint": "Alat uji ini digunakan untuk mengetahui kuat/tidaknya hubungan dan pengaruh (R dan R-Square).",
+        "explanation": "Masalah asosiatif (hubungan) diukur menggunakan alat analisis Korelasi (hubungan) atau Regresi (pengaruh)."
+    },
+    {
+        "id": "q12",
+        "cat": "P5",
+        "text": "Apa jenis skala pengukuran yang hanya memiliki jawaban tegas dikotomis (seperti Ya-Tidak / Benar-Salah)?",
+        "accepted_keywords": [
+            "skala",
+            "guttman",
+            "skala guttman"
+        ],
+        "hint": "Menghasilkan skor 1 (Ya/Setuju) dan 0 (Tidak/Menolak).",
+        "explanation": "Skala Guttman memberikan jawaban tegas dan jelas (dikotomis), misal Ya–Tidak, Benar-Salah, Positif-Negatif."
+    },
+    {
+        "id": "q13",
+        "cat": "P5",
+        "text": "Skala apa yang berfungsi mengukur sikap atau persepsi tentang fenomena sosial dengan tingkat jawaban dari 'Sangat Setuju' sampai 'Sangat Tidak Setuju'?",
+        "accepted_keywords": [
+            "skala",
+            "likert",
+            "skala likert"
+        ],
+        "hint": "Sangat populer digunakan di kuesioner dengan rentang skor 1-5.",
+        "explanation": "Skala Likert digunakan untuk mengukur sikap, persepsi, dan pendapat fenomena sosial dengan tingkatan (SS, ST, RG, TS, STS)."
+    },
+    {
+        "id": "q14",
+        "cat": "P5",
+        "text": "Berikan satu jenis dokumen/laporan yang tergolong sumber pengumpulan data sekunder (bukan data primer)!",
+        "accepted_keywords": [
+            "membaca",
+            "laporan",
+            "statistik",
+            "biro",
+            "pusat",
+            "statistik",
+            "bps",
+            "membaca laporan statistik biro pusat statistik bps",
+            "sekunder",
+            "bps",
+            "jurnal"
+        ],
+        "hint": "Data primer diambil langsung oleh peneliti. Mana yang bukan diambil langsung?",
+        "explanation": "Laporan BPS, dokumen perusahaan, dan jurnal adalah sumber Data Sekunder, bukan Primer."
+    },
+    {
+        "id": "q15",
+        "cat": "P5",
+        "text": "Apa langkah pertama yang harus dilakukan responden pada 4 langkah The Response Process dalam pengisian kuesioner?",
+        "accepted_keywords": [
+            "membaca",
+            "pertanyaan",
+            "membaca pertanyaan"
+        ],
+        "hint": "Hal paling mendasar sebelum bisa menjawab pertanyaan tertulis.",
+        "explanation": "The Response Process: 1) Pertanyaan harus dibaca, 2) Pertanyaan dipahami, 3) Membuat respons, 4) Diterjemahkan ke kategori yang ada."
+    },
+    {
+        "id": "q16",
+        "cat": "P1",
+        "text": "Apa sebutan untuk penelitian yang berfokus pada penerapan ilmu/produk untuk memecahkan masalah kehidupan sesungguhnya?",
+        "accepted_keywords": [
+            "terapan",
+            "applied",
+            "terapan applied"
+        ],
+        "hint": "Tujuan utama penelitian ini adalah untuk 'menerapkan' metode dan sistem demi memecahkan masalah praktis manusia.",
+        "explanation": "Penelitian terapan (Applied Research) bertujuan untuk menerapkan penelitian di lapangan/dunia nyata secara langsung, berlawanan dengan penelitian dasar yang berfokus ke penemuan teori baru."
+    },
+    {
+        "id": "q17",
+        "cat": "P1",
+        "text": "Metode penelitian apa yang tempatnya alamiah, TIDAK ADA perlakuan dari peneliti, dan peneliti mengumpulkan data asli berdasarkan pandangan sumber data?",
+        "accepted_keywords": [
+            "naturalistik"
+        ],
+        "hint": "Berasal dari kata sifat alam, atau 'apa adanya' tanpa treatment buatan.",
+        "explanation": "Metode naturalistik (atau kualitatif) melihat situasi berdasarkan kenyataan (realitas) tanpa memanipulasi atau memberikan 'treatment' eksperimen kepada partisipan."
+    },
+    {
+        "id": "q18",
+        "cat": "P2",
+        "text": "Apa sebutan untuk variabel yang secara teoritis mempengaruhi hubungan antara variabel independen menjadi tidak langsung dan tidak dapat diamati/diukur secara nyata?",
+        "accepted_keywords": [
+            "variabel",
+            "intervening",
+            "variabel intervening"
+        ],
+        "hint": "Bedanya dengan moderator, variabel ini bersifat laten (tidak bisa diukur langsung oleh instrumen yang nyata).",
+        "explanation": "Variabel Intervening bertindak sebagai penengah dan mempengaruhi tetapi bersifat sangat konseptual dan tidak dapat diamati secara langsung."
+    },
+    {
+        "id": "q19",
+        "cat": "P3",
+        "text": "Apa nama teknik pengambilan anggota sampel secara acak tanpa memperhatikan strata yang ada di populasi karena dianggap homogen?",
+        "accepted_keywords": [
+            "simple",
+            "random",
+            "sampling",
+            "simple random sampling"
+        ],
+        "hint": "Teknik paling dasar ketika populasi seragam secara proporsional.",
+        "explanation": "Simple Random Sampling dilakukan ketika populasi bersifat seragam atau homogen tanpa strata khusus."
+    },
+    {
+        "id": "q20",
+        "cat": "P5",
+        "text": "Disebut apakah pengumpulan data dari semua anggota populasi secara keseluruhan tanpa mengambil sampel?",
+        "accepted_keywords": [
+            "semantic",
+            "differential",
+            "semantic differential"
+        ],
+        "hint": "Cocok untuk memberikan rentang kesan pada dua sifat yang kontras (misal: Bersih di satu sisi, Kotor di sisi lain).",
+        "explanation": "Semantic Differential digunakan untuk mengukur sikap dengan memberikan opsi antonim ekstrem pada dua kutub ujung rentang nilai (kontinuum)."
+    },
+    {
+        "id": "q21",
+        "cat": "P1",
+        "text": "Apa dua tahapan utama yang dilakukan pada Uji Instrumen Kuesioner?",
+        "accepted_keywords": [
+            "jovita",
+            "kaur",
+            "jovita kaur"
+        ],
+        "hint": "Namanya berawalan huruf J.",
+        "explanation": "Definisi Jovita Kaur menekankan pada proses sistematis, berbasis data, dan pencarian solusi yang objektif."
+    },
+    {
+        "id": "q22",
+        "cat": "P1",
+        "text": "Angka korelasi r hitung minimum agar suatu item pertanyaan dianggap valid secara konvensional (n > 30) adalah sebesar...",
+        "accepted_keywords": [
+            "pembuktian",
+            "verification",
+            "pembuktian verification"
+        ],
+        "hint": "Sesuai dengan kata 'membuktikan' keraguan.",
+        "explanation": "Penemuan untuk hal baru, pembuktian (verification) untuk menguji keragu-raguan, dan pengembangan untuk memperdalam ilmu yang sudah ada."
+    },
+    {
+        "id": "q23",
+        "cat": "P1",
+        "text": "Apa nama skala yang diurutkan pada suatu continuum sehingga dapat ditentukan mana respons partisipan terhadap sifat tertentu?",
+        "accepted_keywords": [
+            "valid"
+        ],
+        "hint": "Sesuatu yang tepat dan akurat disebut...",
+        "explanation": "Valid berarti memiliki derajat ketepatan. Reliabel berarti konsisten, objektif berarti bebas dari bias peneliti."
+    },
+    {
+        "id": "q24",
+        "cat": "P2",
+        "text": "Apa arti reliabilitas dari suatu kuesioner?",
+        "accepted_keywords": [
+            "independen",
+            "supaya",
+            "terbangun",
+            "objektivitas",
+            "independen supaya terbangun objektivitas"
+        ],
+        "hint": "Peneliti harus menjaga jarak agar datanya tidak memihak.",
+        "explanation": "Dalam penelitian kuantitatif, peneliti harus bersifat independen dan menjaga jarak agar objektivitas terbangun. Sebaliknya, di kualitatif, peneliti harus interaktif untuk menggali makna terdalam."
+    },
+    {
+        "id": "q25",
+        "cat": "P2",
+        "text": "Berikan satu contoh instrumen yang digunakan untuk mengambil data kualitatif?",
+        "accepted_keywords": [
+            "komparatif"
+        ],
+        "hint": "Kata dasarnya adalah 'compare' atau membandingkan.",
+        "explanation": "Rumusan komparatif digunakan untuk membandingkan keadaan variabel yang sama pada sampel, populasi, atau waktu yang berbeda."
+    },
+    {
+        "id": "q26",
+        "cat": "P2",
+        "text": "Langkah apa yang dilakukan setelah Formulasi Hipotesis dalam siklus Scientific Research?",
+        "accepted_keywords": [
+            "variabel",
+            "kontrol",
+            "variabel kontrol"
+        ],
+        "hint": "Kata kuncinya adalah 'dikendalikan' agar konstan.",
+        "explanation": "Variabel kontrol sering digunakan oleh peneliti terutama pada eksperimen atau studi komparatif untuk menetralkan faktor luar yang bisa mengganggu hubungan antar variabel utama."
+    },
+    {
+        "id": "q27",
+        "cat": "P2",
+        "text": "Metode apa yang bertujuan untuk membantu pengambilan keputusan atau mengevaluasi kinerja suatu program?",
+        "accepted_keywords": [
+            "paradigma",
+            "penelitian",
+            "paradigma penelitian"
+        ],
+        "hint": "Sering diartikan sebagai cara pandang utama atau desain konseptual yang memandu seluruh alur metodologi.",
+        "explanation": "Paradigma Penelitian adalah cetak biru atau pola pikir hubungan variabel yang digunakan untuk menentukan jumlah rumusan masalah, teori, hipotesis, dan jenis analisis statistik."
+    },
+    {
+        "id": "q28",
+        "cat": "P3",
+        "text": "Apa jenis variabel independen pada rumusan masalah deskriptif sebelum dihubungkan dengan variabel lain?",
+        "accepted_keywords": [
+            "sampling",
+            "insidental",
+            "sampling insidental"
+        ],
+        "hint": "Berasal dari kata 'insiden' (kejadian/kebetulan spontan).",
+        "explanation": "Sampling Insidental (atau Aksidental) bersifat sangat spontan mengambil siapa saja yang bersedia dan ditemui peneliti pada saat itu tanpa rencana partisipan khusus yang rinci."
+    },
+    {
+        "id": "q29",
+        "cat": "P5",
+        "text": "Berapa skor Idealnya bila 100 orang dalam survei skala Likert memilih 'Sangat Setuju' (skor 5)?",
+        "accepted_keywords": [
+            "500"
+        ],
+        "hint": "Kalikan jumlah total sampel dengan nilai maksimum tiap instrumen.",
+        "explanation": "Skor Ideal (Kriterium Maksimal) dicapai apabila semua responden memberikan skor tertinggi (5 x 100 = 500)."
+    },
+    {
+        "id": "q30",
+        "cat": "P5",
+        "text": "Apa langkah pertama dalam proses pembuatan kuesioner?",
+        "accepted_keywords": [
+            "mengidentifikasi",
+            "informasi",
+            "apa",
+            "yang",
+            "dibutuhkan",
+            "mengidentifikasi informasi apa yang dibutuhkan"
+        ],
+        "hint": "Sebelum merancang pertanyaannya apalagi layoutnya, peneliti harus tahu tujuannya.",
+        "explanation": "Identifikasi informasi apa yang dibutuhkan adalah tahapan fundamental paling pertama sebelum memutuskan jenis kuesioner apalagi membuat draf inti pertanyaannya."
+    }
+];
+
+        // STATE
+        let quizQuestions = [];
+        let currentIdx = 0;
+        let score = 0;
+        let maxScore = 0;
+        let userAnswers = []; // store typed text
+        let quizHistory = []; // { q, selected, isCorrect, usedHint }
+
+        // DOM
+        const inNumQuestions = document.getElementById('num-questions');
+        document.getElementById('max-q').innerText = bank.length;
+        inNumQuestions.max = bank.length;
+
+        function shuffle(array) {
+            let curId = array.length, randomId;
+            while (curId !== 0) {
+                randomId = Math.floor(Math.random() * curId);
+                curId--;
+                [array[curId], array[randomId]] = [array[randomId], array[curId]];
+            }
+            return array;
+        }
+
+        function startQuiz() {
+            let num = parseInt(inNumQuestions.value);
+            if (num < 1) num = 1;
+            if (num > bank.length) num = bank.length;
+
+            let shuffledBank = shuffle([...bank]);
+            quizQuestions = shuffledBank.slice(0, num);
+
+            currentIdx = 0;
+            maxScore = num * 100;
+            score = maxScore;
+            quizHistory = [];
+            userAnswers = new Array(num).fill("");
+
+            document.getElementById('total-q-num').innerText = num;
+            updateLiveScore();
+
+            switchScreen('screen-quiz');
+            renderQuestion(currentIdx);
+        }
+
+        function switchScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateLiveScore() {
+            document.getElementById('live-score').innerText = score;
+        }
+
+        function renderQuestion(idx) {
+            const q = quizQuestions[idx];
+            document.getElementById('current-q-num').innerText = idx + 1;
+
+            document.getElementById('hint-box').style.display = 'none';
+            document.getElementById('hint-box').innerText = '';
+            document.getElementById('btn-hint').disabled = false;
+
+            let html = `
+      <div class="question-text"><span style="color:var(--muted); font-size:0.8rem; font-family:'DM Mono', monospace;">[${q.cat}]</span><br> ${q.text}</div>
+      <div id="options-grid">
+         <textarea id="answer-input" class="text-input-answer" placeholder="Ketik jawaban Anda secara detail di sini..." rows="4"></textarea>
+      </div>
+    `;
+
+            document.getElementById('q-container').innerHTML = html;
+
+            // Focus input automatically
+            setTimeout(() => {
+                document.getElementById('answer-input').focus();
+            }, 50);
+
+            // Nav buttons
+            if (idx === quizQuestions.length - 1) {
+                document.getElementById('btn-next').style.display = 'none';
+                document.getElementById('btn-finish').style.display = 'block';
+            } else {
+                document.getElementById('btn-next').style.display = 'block';
+                document.getElementById('btn-finish').style.display = 'none';
+            }
+        }
+
+        function useHint() {
+            const q = quizQuestions[currentIdx];
+            document.getElementById('hint-box').innerText = "💡 Hint: " + q.hint;
+            document.getElementById('hint-box').style.display = 'block';
+
+            score -= 5;
+            updateLiveScore();
+            document.getElementById('btn-hint').disabled = true;
+            q._usedHint = true;
+        }
+
+        // Fuzzy Matching Logic
+        function checkAnswerMatch(userInput, keywords) {
+            if (!userInput) return false;
+            let normalizedInput = userInput.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
+
+            // Check if any accepted keyword is within the user's input string
+            for (let kw of keywords) {
+                if (normalizedInput.includes(kw.toLowerCase())) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function checkAndSaveCurrent() {
+            const q = quizQuestions[currentIdx];
+            const inputField = document.getElementById('answer-input');
+            const selected = inputField ? inputField.value.trim() : "";
+
+            if (!selected) {
+                alert("Silakan ketik jawaban terlebih dahulu!");
+                return false;
+            }
+
+            userAnswers[currentIdx] = selected;
+
+            let isCorrect = checkAnswerMatch(selected, q.accepted_keywords);
+            if (!isCorrect) {
+                score -= 100;
+            }
+
+            if (score < 0) score = 0;
+            updateLiveScore();
+
+            quizHistory.push({
+                question: q,
+                selected: selected,
+                isCorrect: isCorrect,
+                usedHint: q._usedHint || false
+            });
+
+            return true;
+        }
+
+        function nextQuestion() {
+            if (checkAndSaveCurrent()) {
+                currentIdx++;
+                renderQuestion(currentIdx);
+            }
+        }
+
+        function finishQuiz() {
+            if (checkAndSaveCurrent()) {
+                buildResultScreen();
+                switchScreen('screen-result');
+            }
+        }
+
+        function buildResultScreen() {
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('max-score').innerText = maxScore;
+
+            const list = document.getElementById('study-cards-list');
+            let cardsHtml = '';
+
+            let needsReview = quizHistory.filter(h => !h.isCorrect || h.usedHint);
+
+            if (needsReview.length === 0) {
+                cardsHtml = `<p>Sempurna! Anda menguasai semua materi.</p>`;
+            } else {
+                needsReview.forEach((h, i) => {
+                    let statusText = !h.isCorrect ? "Jawaban Salah" : "Dijawab menggunakan alat bantu";
+                    let cardColor = !h.isCorrect ? "" : "gold";
+
+                    cardsHtml += `
+          <div class="study-card ${cardColor}">
+            <h4>${h.question.cat} — ${statusText}</h4>
+            <div class="q-text">Q: ${h.question.text}</div>
+            <div style="font-size:0.85rem">
+              <div style="margin-bottom:0.5rem; color:var(--wrong);"><strong>Jawaban Anda:</strong> ${h.selected}</div>
+              <div style="color:var(--correct);"><strong>Kunci Jawaban (Referensi):</strong> ${h.question.accepted_keywords[0]}</div>
+              <div class="explanation">💡 <strong>Penjelasan:</strong><br>${h.question.explanation}</div>
+            </div>
+          </div>
+        `;
+                });
+            }
+
+            list.innerHTML = cardsHtml;
+            buildPrintFriendlyContent();
+        }
+
+        function buildPrintFriendlyContent() {
+            let html = `
+      <div style="font-family: serif; color: #000;">
+        <h1 style="text-align:center; border-bottom: 2px solid #000; padding-bottom: 1rem; margin-bottom: 2rem;">Isian Singkat Metodologi Penelitian</h1>
+        <div style="margin-bottom: 3rem;">
+    `;
+
+            quizQuestions.forEach((q, i) => {
+                html += `
+        <div style="margin-bottom: 2rem; page-break-inside: avoid;">
+          <p style="font-weight: bold; margin-bottom: 0.5rem; line-height: 1.4; font-size: 1.05rem;">${i + 1}. ${q.text}</p>
+          <div style="border: 1px solid #aaa; border-radius: 4px; height: 6rem; width: 100%; background: #fdfdfd; margin-top: 0.5rem;"></div>
+        </div>
+      `;
+            });
+
+            html += `</div><div class="page-break"></div>`;
+
+            html += `
+        <h2 style="border-bottom: 1px solid #000; padding-bottom: 0.5rem; margin-bottom: 1.5rem;">Kunci Jawaban & Pembahasan</h2>
+    `;
+
+            quizQuestions.forEach((q, i) => {
+                html += `
+        <div style="margin-bottom: 1.5rem; page-break-inside: avoid;">
+          <p style="font-weight: bold;">${i + 1}. Jawaban Referensi: ${q.accepted_keywords[0]}</p>
+          <p style="font-style: italic; font-size: 0.9em; margin-top: 0.3rem;">Penjelasan: ${q.explanation}</p>
+        </div>
+      `;
+            });
+
+            html += `</div>`;
+            document.getElementById('print-only-content').innerHTML = html;
+        }
+
+        function downloadPDF() {
+            document.getElementById('print-only-content').style.display = 'block';
+            const element = document.getElementById('print-only-content');
+            var opt = {
+                margin: 15,
+                filename: 'Isian_Metopen_P1_P5.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save().then(() => {
+                document.getElementById('print-only-content').style.display = 'none';
+            });
+        }
+
+    </script>
+</body>
+
+</html>

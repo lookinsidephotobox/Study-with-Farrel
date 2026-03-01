@@ -352,7 +352,10 @@
     </header>
 
     <nav>
-        <a href="metopen_study_cards.html">← Kembali ke Kartu Belajar</a>
+        <a href="index.html">🏠 Menu Utama</a>
+        <a href="metopen_study_cards.html" style="margin-left:1rem;">← Kembali ke Kartu Belajar</a>
+        <a href="metopen_quiz.html" style="margin-left:1rem;">📝 Kuis</a>
+        <a href="metopen_isian.html" style="margin-left:1rem;">✍️ Isian Singkat</a>
     </nav>
 
     <main id="main">
@@ -412,13 +415,31 @@
         <!-- SCREEN 3: RESULT -->
         <div id="screen-result" class="screen">
             <div id="pdf-wrapper">
-                <div class="card result-header">
+                <div class="card result-header" style="text-align: center;">
                     <h2>Sesi Review Selesai!</h2>
                     <div class="final-icon">🧠</div>
                     <p>Anda telah mereview <span id="final-total"></span> kartu pembelajaran. Terus biasakan untuk
                         mengingat materi tanpa bantuan lho!</p>
                     <button class="btn btn-accent" id="btn-download" onclick="downloadPDF()"
-                        style="margin-top: 1rem;">🖨 Unduh PDF (Latihan Esai + Kunci)</button>
+                        style="margin-top: 1rem; width: 100%; max-width: 300px;">🖨 Unduh PDF (Latihan Esai +
+                        Kunci)</button>
+
+                    <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+                        <img src="WhatsApp Image 2026-03-01 at 19.41.58.jpeg" alt="Farrel Ananta"
+                            style="width: 100%; max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: block;">
+                        <h3>Terima kasih sudah belajar!</h3>
+                        <div
+                            style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
+                            <a href="https://www.linkedin.com/in/farrelanantaputra/" target="_blank"
+                                style="display: inline-block; background: #0077b5; color: white; text-decoration: none; padding: 0.8rem 1.2rem; border-radius: 4px; font-weight: 600; transition: opacity 0.2s;">
+                                🔗 LinkedIn
+                            </a>
+                            <a href="https://www.instagram.com/aktr.farrel/" target="_blank"
+                                style="display: inline-block; background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: white; text-decoration: none; padding: 0.8rem 1.2rem; border-radius: 4px; font-weight: 600; transition: opacity 0.2s;">
+                                📸 Instagram
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Hidden Print Append area for PDF generation -->
