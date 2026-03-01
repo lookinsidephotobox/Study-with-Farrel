@@ -4,6 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f0e0b">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon"
+        href="https://upload.wikimedia.org/wikipedia/commons/4/4e/Open_Source_Initiative_keyhole.svg">
     <title>Flashcards — Metodologi Penelitian</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
@@ -315,6 +319,41 @@
             margin: 1rem 0;
         }
 
+        /* Result Screen */
+        .result-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .study-card {
+            background: var(--light);
+            border-left: 4px solid var(--gold);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 4px 4px 0;
+            text-align: left;
+        }
+
+        .study-card h4 {
+            font-family: 'DM Mono', monospace;
+            color: var(--muted);
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .study-card .q-text {
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        .study-card .explanation {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            background: #fff;
+            padding: 1rem;
+            border: 1px dashed var(--border);
+        }
+
         /* Print Styles hiding UI elements */
         @media print {
             body {
@@ -393,6 +432,18 @@
 
             <div class="setup-form">
                 <div>
+                    <label for="material-filter">Filter Materi:</label>
+                    <select id="material-filter" onchange="updateMaxQuestions()"
+                        style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 1rem; font-family: inherit;">
+                        <option value="all">Semua Materi</option>
+                        <option value="P1">Materi P1</option>
+                        <option value="P2">Materi P2</option>
+                        <option value="P3">Materi P3</option>
+                        <option value="P4">Materi P4</option>
+                        <option value="P5">Materi P5</option>
+                    </select>
+                </div>
+                <div>
                     <label for="num-cards">Jumlah Kartu:</label>
                     <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 0.5rem;">Total bank soal tersedia:
                         <span id="max-q">15</span>
@@ -467,6 +518,12 @@
                     </div>
                 </div>
 
+                <div id="review-container" class="card" style="padding: 1.5rem; margin-top: 2rem;">
+                    <h3 style="text-align: left; margin-bottom: 1rem;">Kartu Pembelajaran (Review)</h3>
+                    <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 1.5rem; text-align: left;">Daftar
+                        kartu yang telah Anda review pada sesi ini.</p>
+                    <div id="study-cards-list"></div>
+                </div>
             </div>
         </div>
 
@@ -482,8 +539,20 @@
 
         // DOM
         const inNumCards = document.getElementById('num-cards');
-        document.getElementById('max-q').innerText = bank.length;
-        inNumCards.max = bank.length;
+        const materialFilter = document.getElementById('material-filter');
+
+        function updateMaxQuestions() {
+            const filter = materialFilter.value;
+            const filteredBank = filter === 'all' ? bank : bank.filter(q => q.cat === filter);
+            document.getElementById('max-q').innerText = filteredBank.length;
+            inNumCards.max = filteredBank.length;
+            if (parseInt(inNumCards.value) > filteredBank.length) {
+                inNumCards.value = filteredBank.length;
+            }
+        }
+
+        // Initialize
+        updateMaxQuestions();
 
         function shuffle(array) {
             let curId = array.length, randomId;
@@ -496,12 +565,15 @@
         }
 
         function startFlashcards() {
+            const filter = materialFilter.value;
+            const filteredBank = filter === 'all' ? bank : bank.filter(q => q.cat === filter);
+
             let num = parseInt(inNumCards.value);
             if (num < 1) num = 1;
-            if (num > bank.length) num = bank.length;
+            if (num > filteredBank.length) num = filteredBank.length;
 
             // Pick questions
-            let shuffledBank = shuffle([...bank]);
+            let shuffledBank = shuffle([...filteredBank]);
             fcQuestions = shuffledBank.slice(0, num);
 
             // Reset state
@@ -552,8 +624,29 @@
         }
 
         function finishSession() {
+            buildResultScreen();
             buildPrintFriendlyContent();
             switchScreen('screen-result');
+        }
+
+        function buildResultScreen() {
+            const list = document.getElementById('study-cards-list');
+            let cardsHtml = '';
+
+            fcQuestions.forEach((q, i) => {
+                cardsHtml += `
+          <div class="study-card">
+            <h4>${q.cat} — Kartu Pembelajaran</h4>
+            <div class="q-text">Q: ${q.text}</div>
+            <div style="font-size:0.85rem">
+              <div><strong>Kunci Jawaban:</strong> ${q.options[q.correct]}</div>
+              <div class="explanation">💡 <strong>Penjelasan:</strong><br>${q.explanation}</div>
+            </div>
+          </div>
+        `;
+            });
+
+            list.innerHTML = cardsHtml;
         }
 
         function buildPrintFriendlyContent() {
@@ -614,6 +707,11 @@
         }
 
         function downloadPDF() {
+            // 0. Build content based on selected filter
+            const filter = materialFilter.value;
+            fcQuestions = filter === 'all' ? bank : bank.filter(q => q.cat === filter);
+            buildPrintFriendlyContent();
+
             // 1. Scroll to top - CRITICAL for mobile capture accuracy
             window.scrollTo(0, 0);
 
@@ -649,6 +747,12 @@
             });
         }
 
+        // --- PWA Service Worker Registration ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js');
+            });
+        }
     </script>
     <!-- Hidden Print Append area for PDF generation at root level -->
     <div id="print-only-content"

@@ -4,12 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f0e0b">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon"
+        href="https://upload.wikimedia.org/wikipedia/commons/4/4e/Open_Source_Initiative_keyhole.svg">
     <title>Quiz — Metodologi Penelitian</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
         rel="stylesheet">
     <!-- html2pdf for PDF generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- canvas-confetti for celebration -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="question_bank_100.js"></script>
 
     <style>
@@ -205,9 +211,28 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             padding-bottom: 1rem;
             border-bottom: 2px dashed var(--border);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .timer-container {
+            width: 100%;
+            background: var(--border);
+            height: 6px;
+            border-radius: 3px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            display: none;
+        }
+
+        .timer-bar {
+            height: 100%;
+            background: var(--accent);
+            width: 100%;
+            transition: width 1s linear, background-color 0.3s;
         }
 
         .score-badge {
@@ -353,6 +378,16 @@
             border-left-color: var(--gold);
         }
 
+        .study-card.correct {
+            border-left-color: var(--correct);
+            background: #f0fff4;
+        }
+
+        .study-card.wrong {
+            border-left-color: var(--wrong);
+            background: #fff5f5;
+        }
+
         .study-card h4 {
             font-family: 'DM Mono', monospace;
             color: var(--muted);
@@ -446,11 +481,31 @@
 
             <div class="setup-form">
                 <div>
+                    <label for="material-filter">Filter Materi:</label>
+                    <select id="material-filter" onchange="updateMaxQuestions()"
+                        style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 1rem; font-family: inherit;">
+                        <option value="all">Semua Materi</option>
+                        <option value="P1">Materi P1</option>
+                        <option value="P2">Materi P2</option>
+                        <option value="P3">Materi P3</option>
+                        <option value="P4">Materi P4</option>
+                        <option value="P5">Materi P5</option>
+                    </select>
+                </div>
+                <div>
                     <label for="num-questions">Jumlah Pertanyaan:</label>
                     <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 0.5rem;">Total bank soal tersedia:
                         <span id="max-q">15</span>
                     </p>
                     <input type="number" id="num-questions" min="1" max="15" value="10">
+                </div>
+                <div>
+                    <label
+                        style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; margin-bottom: 1rem;">
+                        <input type="checkbox" id="enable-timer"
+                            style="width: 1.2rem; height: 1.2rem; accent-color: var(--accent);">
+                        <span style="font-weight: 500;">Aktifkan Mode Tantangan (Waktu Terbatas)</span>
+                    </label>
                 </div>
                 <div>
                     <button class="btn" onclick="startQuiz()">Mulai Kuis</button>
@@ -463,7 +518,13 @@
             <div class="quiz-header">
                 <div style="font-family: 'DM Mono', monospace; font-weight: 500;">Pertanyaan <span
                         id="current-q-num">1</span> dari <span id="total-q-num">10</span></div>
+                <div id="timer-text" style="font-weight: 700; color: var(--accent); display: none;">⏱ <span
+                        id="time-left">30</span>s</div>
                 <div class="score-badge">Skor: <span id="live-score">100</span></div>
+            </div>
+
+            <div class="timer-container" id="timer-container">
+                <div class="timer-bar" id="timer-bar"></div>
             </div>
 
             <div class="question-container" id="q-container">
@@ -537,10 +598,27 @@
         let userAnswers = []; // store selected options and statuses
         let quizHistory = []; // { q, selected, correct, pointsEarned, usedHint, used5050 }
 
+        let timerEnabled = false;
+        let timerInterval = null;
+        let timeLeft = 30;
+        const TIME_LIMIT = 30;
+
         // DOM
         const inNumQuestions = document.getElementById('num-questions');
-        document.getElementById('max-q').innerText = bank.length;
-        inNumQuestions.max = bank.length;
+        const materialFilter = document.getElementById('material-filter');
+
+        function updateMaxQuestions() {
+            const filter = materialFilter.value;
+            const filteredBank = filter === 'all' ? bank : bank.filter(q => q.cat === filter);
+            document.getElementById('max-q').innerText = filteredBank.length;
+            inNumQuestions.max = filteredBank.length;
+            if (parseInt(inNumQuestions.value) > filteredBank.length) {
+                inNumQuestions.value = filteredBank.length;
+            }
+        }
+
+        // Initialize
+        updateMaxQuestions();
 
         function shuffle(array) {
             let curId = array.length, randomId;
@@ -553,12 +631,17 @@
         }
 
         function startQuiz() {
+            const filter = materialFilter.value;
+            const filteredBank = filter === 'all' ? bank : bank.filter(q => q.cat === filter);
+
             let num = parseInt(inNumQuestions.value);
             if (num < 1) num = 1;
-            if (num > bank.length) num = bank.length;
+            if (num > filteredBank.length) num = filteredBank.length;
 
-            // Pick questions (try to get from different cats if possible, but mostly shuffle)
-            let shuffledBank = shuffle([...bank]);
+            timerEnabled = document.getElementById('enable-timer').checked;
+
+            // Pick questions
+            let shuffledBank = shuffle([...filteredBank]);
             quizQuestions = shuffledBank.slice(0, num);
 
             // Reset state
@@ -570,6 +653,9 @@
 
             document.getElementById('total-q-num').innerText = num;
             updateLiveScore();
+
+            document.getElementById('timer-container').style.display = timerEnabled ? 'block' : 'none';
+            document.getElementById('timer-text').style.display = timerEnabled ? 'block' : 'none';
 
             switchScreen('screen-quiz');
             renderQuestion(currentIdx);
@@ -623,9 +709,73 @@
                 document.getElementById('btn-next').style.display = 'block';
                 document.getElementById('btn-finish').style.display = 'none';
             }
+
+            if (timerEnabled) {
+                startTimer();
+            }
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = TIME_LIMIT;
+            updateTimerUI();
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerUI();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmitWrong();
+                }
+            }, 1000);
+        }
+
+        function updateTimerUI() {
+            document.getElementById('time-left').innerText = timeLeft;
+            const bar = document.getElementById('timer-bar');
+            const pct = (timeLeft / TIME_LIMIT) * 100;
+            bar.style.width = pct + '%';
+
+            if (timeLeft <= 5) {
+                bar.style.background = 'var(--wrong)';
+                document.getElementById('timer-text').style.color = 'var(--wrong)';
+            } else {
+                bar.style.background = 'var(--accent)';
+                document.getElementById('timer-text').style.color = 'var(--accent)';
+            }
+        }
+
+        function autoSubmitWrong() {
+            playThud();
+            alert("Waktu habis! Jawaban dianggap salah.");
+            // Mark an invalid option to ensure it's wrong
+            userAnswers[currentIdx] = -1;
+
+            // disable options
+            document.querySelectorAll('.option').forEach(el => el.classList.add('disabled'));
+
+            // Move next or finish
+            setTimeout(() => {
+                if (currentIdx === quizQuestions.length - 1) {
+                    finishQuiz();
+                } else {
+                    nextQuestion();
+                }
+            }, 1000);
         }
 
         function selectOption(optIdx) {
+            const q = quizQuestions[currentIdx];
+            // Play sound if not already selected to avoid spam
+            if (userAnswers[currentIdx] === null || userAnswers[currentIdx] === undefined) {
+                if (optIdx === q.correct) {
+                    playDing();
+                } else {
+                    playThud();
+                }
+            }
+
             // Deselect others
             document.querySelectorAll('.option').forEach(el => el.classList.remove('selected'));
             // Select this
@@ -667,11 +817,14 @@
         }
 
         function checkAndSaveCurrent() {
+            if (timerEnabled) clearInterval(timerInterval);
+
             const q = quizQuestions[currentIdx];
             const selected = userAnswers[currentIdx];
 
             if (selected === null || selected === undefined) {
                 alert("Silakan pilih jawaban terlebih dahulu!");
+                if (timerEnabled) startTimer(); // Resume if they just clicked next without answering
                 return false;
             }
 
@@ -688,7 +841,8 @@
                 selected: selected,
                 isCorrect: isCorrect,
                 usedHint: q._usedHint || false,
-                used5050: q._used5050 || false
+                used5050: q._used5050 || false,
+                timeout: selected === -1
             });
 
             return true;
@@ -703,10 +857,101 @@
 
         function finishQuiz() {
             if (checkAndSaveCurrent()) {
+
+                // SAVE HIGH SCORE
+                const maxSavedQuiz = parseInt(localStorage.getItem('metopen_max_quiz_pilihan')) || 0;
+                if (score > maxSavedQuiz) {
+                    localStorage.setItem('metopen_max_quiz_pilihan', score);
+                }
+
+                // SAVE PROGRESS ANALYTICS
+                let analytics = JSON.parse(localStorage.getItem('metopen_analytics')) || [];
+                // Group points by category for this session
+                let catScores = { P1: { c: 0, t: 0 }, P2: { c: 0, t: 0 }, P3: { c: 0, t: 0 }, P4: { c: 0, t: 0 }, P5: { c: 0, t: 0 } };
+
+                quizHistory.forEach(h => {
+                    if (catScores[h.question.cat]) {
+                        catScores[h.question.cat].t += 1;
+                        if (h.isCorrect) catScores[h.question.cat].c += 1;
+                    }
+                });
+
+                analytics.push({
+                    date: new Date().toISOString(),
+                    module: 'pilihan_ganda',
+                    score: score,
+                    maxScore: maxScore,
+                    catScores: catScores
+                });
+
+                if (analytics.length > 10) analytics = analytics.slice(-10);
+                localStorage.setItem('metopen_analytics', JSON.stringify(analytics));
+
                 buildResultScreen();
                 switchScreen('screen-result');
+
+                // Confetti if score > 80%
+                if (score >= maxScore * 0.8 && maxScore > 0) {
+                    triggerConfetti();
+                }
             }
         }
+
+        // --- Audio & Visual Helpers ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playTone(freq, type, duration, vol) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }
+
+        function playDing() {
+            // High, pleasant ping
+            playTone(800, 'sine', 0.1, 0.1);
+            setTimeout(() => playTone(1200, 'sine', 0.2, 0.1), 100);
+        }
+
+        function playThud() {
+            // Low, dull thud
+            playTone(150, 'triangle', 0.1, 0.2);
+            setTimeout(() => playTone(100, 'triangle', 0.2, 0.2), 100);
+        }
+
+        function triggerConfetti() {
+            var duration = 3 * 1000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#c8401e', '#b8923a', '#2ecc71']
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#c8401e', '#b8923a', '#2ecc71']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+        // ------------------------------
 
         function buildResultScreen() {
             document.getElementById('final-score').innerText = score;
@@ -715,27 +960,30 @@
             const list = document.getElementById('study-cards-list');
             let cardsHtml = '';
 
-            let needsReview = quizHistory.filter(h => !h.isCorrect || h.usedHint || h.used5050);
+            // Show ALL questions from history
+            quizHistory.forEach((h, i) => {
+                let statusText = h.isCorrect ? "Jawaban Benar" : "Jawaban Salah";
+                if (h.timeout) statusText = "Waktu Habis (Salah)";
+                else if (h.usedHint || h.used5050) statusText += " (Menggunakan alat bantu)";
 
-            if (needsReview.length === 0) {
-                cardsHtml = `<p>Sempurna! Anda menguasai semua materi.</p>`;
-            } else {
-                needsReview.forEach((h, i) => {
-                    let statusText = !h.isCorrect ? "Jawaban Salah" : "Dijawab menggunakan alat bantu";
-                    let cardColor = !h.isCorrect ? "" : "gold";
+                let cardClass = h.isCorrect ? "correct" : "wrong";
+                if (h.isCorrect && (h.usedHint || h.used5050)) cardClass = "gold"; // Keep gold for helped but correct? 
+                // User said "jika benar warna hijau, jika salah warna merah". 
+                // So I'll prioritize correctness color, but maybe hint/5050 gets gold?
+                // Actually, let's stick to the user's specific request: Correct -> Green, Wrong -> Red.
+                cardClass = h.isCorrect ? "correct" : "wrong";
 
-                    cardsHtml += `
-          <div class="study-card ${cardColor}">
+                cardsHtml += `
+          <div class="study-card ${cardClass}">
             <h4>${h.question.cat} — ${statusText}</h4>
             <div class="q-text">Q: ${h.question.text}</div>
             <div style="font-size:0.85rem">
-              <div><strong>Kunci Jawaban:</strong> ${document.querySelectorAll('.option-text')[0] ? h.question.options[h.question.correct] : h.question.options[h.question.correct]}</div>
+              <div><strong>Kunci Jawaban:</strong> ${h.question.options[h.question.correct]}</div>
               <div class="explanation">💡 <strong>Penjelasan:</strong><br>${h.question.explanation}</div>
             </div>
           </div>
         `;
-                });
-            }
+            });
 
             list.innerHTML = cardsHtml;
             buildPrintFriendlyContent();
@@ -797,6 +1045,11 @@
         }
 
         function downloadPDF() {
+            // 0. Build content based on selected filter
+            const filter = materialFilter.value;
+            quizQuestions = filter === 'all' ? bank : bank.filter(q => q.cat === filter);
+            buildPrintFriendlyContent();
+
             // 1. Scroll to top - CRITICAL for mobile capture accuracy
             window.scrollTo(0, 0);
 
@@ -832,6 +1085,12 @@
             });
         }
 
+        // --- PWA Service Worker Registration ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js');
+            });
+        }
     </script>
     <!-- Hidden Print Append area for PDF generation at root level -->
     <div id="print-only-content"

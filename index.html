@@ -4,6 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f0e0b">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon"
+        href="https://upload.wikimedia.org/wikipedia/commons/4/4e/Open_Source_Initiative_keyhole.svg">
     <title>Menu Utama — Metodologi Penelitian</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
@@ -153,7 +157,22 @@
         <p>Website by Farrel Ananta Putra</p>
     </header>
 
-    <main>
+    <main id="main-menu">
+        <!-- ANALYTICS DASHBOARD CONTAINER -->
+        <div id="analytics-dashboard" class="menu-card"
+            style="display: none; border-top: 4px solid var(--muted); cursor: default;">
+            <div class="menu-icon" style="background: var(--muted); color: #fff;">📊</div>
+            <div class="menu-title">Progress Analytics</div>
+            <div class="menu-desc">Berdasarkan 10 percobaan kuis/isian terakhir Anda.</div>
+
+            <div id="analytics-stats"
+                style="margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--border); display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.9rem;">
+                <!-- Injected via JS -->
+            </div>
+            <button onclick="clearProgress()"
+                style="margin-top: 1rem; background: none; border: 1px solid var(--muted); padding: 0.4rem 0.8rem; border-radius: 4px; font-family: inherit; font-size: 0.7rem; color: var(--muted); cursor: pointer;">Hapus
+                Riwayat Progress</button>
+        </div>
         <a href="metopen_study_cards.html" class="menu-card">
             <div class="menu-icon">📖</div>
             <div class="menu-title">Kartu Belajar (Study Cards)</div>
@@ -163,7 +182,11 @@
 
         <a href="metopen_quiz.html" class="menu-card" style="border-top: 4px solid var(--accent);">
             <div class="menu-icon">🎯</div>
-            <div class="menu-title">Kuis Interaktif</div>
+            <div class="menu-title">Kuis Interaktif
+                <span id="badge-quiz"
+                    style="display:none; font-size: 0.7rem; background: var(--gold); color: #fff; padding: 0.2rem 0.5rem; border-radius: 20px; margin-left: 0.5rem; vertical-align: middle;">🏆
+                    Skor: 0</span>
+            </div>
             <div class="menu-desc">Latih pemahaman Anda melalui kuis acak berganda dengan fitur alat bantu. Cetak PDF
                 untuk kuis format pilihan ganda.</div>
         </a>
@@ -177,11 +200,81 @@
 
         <a href="metopen_isian.html" class="menu-card" style="border-top: 4px solid var(--ink);">
             <div class="menu-icon">✍️</div>
-            <div class="menu-title">Isian Singkat</div>
+            <div class="menu-title">Isian Singkat
+                <span id="badge-isian"
+                    style="display:none; font-size: 0.7rem; background: var(--gold); color: #fff; padding: 0.2rem 0.5rem; border-radius: 20px; margin-left: 0.5rem; vertical-align: middle;">🏆
+                    Skor: 0</span>
+            </div>
             <div class="menu-desc">Latih nalar dengan mengetik jawaban singkat. Evaluasi dilakukan cerdas mendeteksi
                 kata kunci terkait relevansi jawaban.</div>
         </a>
     </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // High Scores
+            const maxQuiz = localStorage.getItem('metopen_max_quiz_pilihan');
+            const maxIsian = localStorage.getItem('metopen_max_quiz_isian');
+
+            if (maxQuiz) {
+                const bq = document.getElementById('badge-quiz');
+                bq.innerText = '🏆 Terbaik: ' + maxQuiz;
+                bq.style.display = 'inline-block';
+            }
+
+            if (maxIsian) {
+                const bi = document.getElementById('badge-isian');
+                bi.innerText = '🏆 Terbaik: ' + maxIsian;
+                bi.style.display = 'inline-block';
+            }
+
+            // Analytics Dashboard
+            const analytics = JSON.parse(localStorage.getItem('metopen_analytics')) || [];
+            if (analytics.length > 0) {
+                document.getElementById('analytics-dashboard').style.display = 'block';
+
+                let agg = { P1: { c: 0, t: 0 }, P2: { c: 0, t: 0 }, P3: { c: 0, t: 0 }, P4: { c: 0, t: 0 }, P5: { c: 0, t: 0 } };
+                analytics.forEach(session => {
+                    for (let cat in session.catScores) {
+                        agg[cat].c += session.catScores[cat].c;
+                        agg[cat].t += session.catScores[cat].t;
+                    }
+                });
+
+                let statsHtml = '';
+                let bestCat = '';
+                let bestPct = -1;
+                let worstCat = '';
+                let worstPct = 101;
+
+                ['P1', 'P2', 'P3', 'P4', 'P5'].forEach(cat => {
+                    if (agg[cat].t > 0) {
+                        const pct = Math.round((agg[cat].c / agg[cat].t) * 100);
+                        statsHtml += `<div><strong>${cat}:</strong> ${pct}% Akurasi (${agg[cat].c}/${agg[cat].t})</div>`;
+
+                        if (pct > bestPct) { bestPct = pct; bestCat = cat; }
+                        if (pct < worstPct) { worstPct = pct; worstCat = cat; }
+                    }
+                });
+
+                if (bestCat) {
+                    statsHtml += `<div style="margin-top:0.5rem; color: var(--accent); font-weight:700;">🌟 Terkuat: Materi ${bestCat} (${bestPct}%)</div>`;
+                }
+                if (worstCat && worstCat !== bestCat) {
+                    statsHtml += `<div style="color: var(--wrong, #a83214); font-weight:700;">⚠️ Terlemah: Materi ${worstCat} (${worstPct}%)</div>`;
+                }
+
+                document.getElementById('analytics-stats').innerHTML = statsHtml;
+            }
+        });
+
+        function clearProgress() {
+            if (confirm("Apakah Anda yakin ingin menghapus riwayat analisis dan progres? Skor tertinggi akan tetap aman.")) {
+                localStorage.removeItem('metopen_analytics');
+                location.reload();
+            }
+        }
+    </script>
 
 </body>
 

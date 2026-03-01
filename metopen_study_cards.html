@@ -4,6 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f0e0b">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon"
+    href="https://upload.wikimedia.org/wikipedia/commons/4/4e/Open_Source_Initiative_keyhole.svg">
   <title>Study Cards — Metodologi Penelitian</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
@@ -145,6 +149,37 @@
       margin-bottom: 0.4rem;
     }
 
+    /* SEARCH & FILTER */
+    .search-container {
+      position: sticky;
+      top: 130px;
+      /* Below nav */
+      z-index: 90;
+      background: var(--paper);
+      padding: 1rem 1.5rem;
+      border-bottom: 1.5px solid var(--border);
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .search-input {
+      width: 100%;
+      max-width: 600px;
+      padding: 0.8rem 1.2rem;
+      border: 1.5px solid var(--border);
+      border-radius: 30px;
+      font-family: inherit;
+      font-size: 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(184, 146, 58, 0.1);
+    }
+
     /* MAIN */
     main {
       max-width: 1100px;
@@ -212,8 +247,33 @@
       align-items: center;
       gap: 0.75rem;
       background: var(--tag-bg);
+      position: relative;
     }
 
+    .btn-pin {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      opacity: 0.3;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .btn-pin:hover {
+      opacity: 0.7;
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .btn-pin.pinned {
+      opacity: 1;
+      color: var(--gold);
+    }
+
+    /* Keep the icon aligned since we added absolute pin */
     .card-icon {
       width: 28px;
       height: 28px;
@@ -1738,13 +1798,122 @@
   </main>
 
   <script>
-    function show(id) {
+    // --- Bookmarks & Search Logic ---
+    let pinnedCards = JSON.parse(localStorage.getItem('metopen_pinned_cards')) || [];
+
+    // Initialize pins on load
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.btn-pin').forEach(btn => {
+        const cardId = btn.getAttribute('onclick').match(/'([^']+)'/)[1];
+        if (pinnedCards.includes(cardId)) {
+          btn.classList.add('pinned');
+        }
+      });
+      renderBookmarks();
+    });
+
+    function togglePin(cardId) {
+      const idx = pinnedCards.indexOf(cardId);
+      if (idx > -1) {
+        pinnedCards.splice(idx, 1);
+      } else {
+        pinnedCards.push(cardId);
+      }
+      localStorage.setItem('metopen_pinned_cards', JSON.stringify(pinnedCards));
+
+      // Update UI for all buttons associated with this card id
+      document.querySelectorAll(`button[onclick="togglePin('${cardId}')"]`).forEach(btn => {
+        btn.classList.toggle('pinned');
+      });
+
+      renderBookmarks();
+    }
+
+    function renderBookmarks() {
+      const grid = document.getElementById('bookmarks-grid');
+      const emptyMsg = document.getElementById('empty-bookmarks');
+
+      // Clear existing (except the empty message)
+      Array.from(grid.children).forEach(child => {
+        if (child.id !== 'empty-bookmarks') grid.removeChild(child);
+      });
+
+      if (pinnedCards.length === 0) {
+        emptyMsg.style.display = 'block';
+        return;
+      }
+
+      emptyMsg.style.display = 'none';
+
+      // Clone cards
+      pinnedCards.forEach(id => {
+        const originalCard = document.getElementById(id);
+        if (originalCard) {
+          const clone = originalCard.cloneNode(true);
+          // Modify clone ID so it does not clash during search
+          clone.id = id + '-clone';
+          grid.appendChild(clone);
+        }
+      });
+    }
+
+    function performSearch() {
+      const query = document.getElementById('search-bar').value.toLowerCase();
+
+      // Only search within active section to avoid overwhelming the DOM, 
+      // or search everywhere if user wants? Let's search everywhere and expand all sections if searching
+      const isSearching = query.length > 0;
+
+      if (isSearching) {
+        // Show all sections
+        document.querySelectorAll('.section').forEach(s => s.style.display = 'block');
+      } else {
+        // Revert to normal nav
+        const activeNav = document.querySelector('nav button.active');
+        if (activeNav) activeNav.click(); // re-trigger the show() function
+        return;
+      }
+
+      // Filter cards
+      document.querySelectorAll('.card').forEach(card => {
+        // Skip bookmark clones
+        if (card.id && card.id.endsWith('-clone')) return;
+
+        const text = card.innerText.toLowerCase();
+        if (text.includes(query)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // --- Navigation ---
+    function showSection(id) {
+      // Clear search
+      const searchBox = document.getElementById('search-bar');
+      if (searchBox.value !== '') {
+        searchBox.value = '';
+        performSearch(); // reset visibility
+      }
+
       document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(s => s.style.display = ''); // clear inline display from search
+
       document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+
       document.getElementById(id).classList.add('active');
-      const idx = ['p1', 'p2', 'p3', 'p4', 'p5'].indexOf(id);
-      document.querySelectorAll('nav button')[idx].classList.add('active');
+
+      const btnMap = { 'bookmarks': 0, 'p1': 1, 'p2': 2, 'p3': 3, 'p4': 4, 'p5': 5 };
+      document.querySelectorAll('nav button')[btnMap[id]].classList.add('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // --- PWA Service Worker Registration ---
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js');
+      });
     }
   </script>
 
