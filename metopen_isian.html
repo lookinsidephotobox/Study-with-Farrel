@@ -667,7 +667,7 @@
             if (num < 1) num = 1;
             if (num > filteredBank.length) num = filteredBank.length;
 
-            timerEnabled = document.getElementById('enable-timer').checked;
+            timerEnabled = document.getElementById('enable-timer')?.checked ?? false;
 
             let shuffledBank = shuffle([...filteredBank]);
             quizQuestions = shuffledBank.slice(0, num);
