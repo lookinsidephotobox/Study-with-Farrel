@@ -160,17 +160,40 @@
 
     /* CARD GRID */
     .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
       gap: 1.25rem;
+      padding-bottom: 0.75rem;
+      /* Scrollbar space */
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
     }
 
-    .card-grid.wide {
-      grid-template-columns: 1fr;
+    .card-grid>* {
+      flex: 0 0 88%;
+      scroll-snap-align: center;
     }
 
-    .card-grid.two-col {
-      grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+    @media(min-width: 768px) {
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        overflow-x: visible;
+        padding-bottom: 0;
+      }
+
+      .card-grid>* {
+        flex: auto;
+      }
+
+      .card-grid.wide {
+        grid-template-columns: 1fr;
+      }
+
+      .card-grid.two-col {
+        grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+      }
     }
 
     /* CARD */
@@ -420,15 +443,33 @@
 
     /* TWO COL CONTENT */
     .two-col-content {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
       gap: 1rem;
       margin-top: 0.5rem;
+      padding-bottom: 0.5rem;
+      /* Space for scrollbar */
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
     }
 
-    @media(max-width: 600px) {
-      .card-grid.two-col {
-        grid-template-columns: 1fr;
+    .two-col-content>* {
+      flex: 0 0 85%;
+      /* Take up most of the screen, leaving a peek for the next item */
+      scroll-snap-align: start;
+    }
+
+    @media(min-width: 600px) {
+      .two-col-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        overflow-x: visible;
+        padding-bottom: 0;
+      }
+
+      .two-col-content>* {
+        flex: auto;
       }
     }
 
@@ -650,24 +691,26 @@
               <div class="content"><strong>Penelitian Terapan</strong>: Menerapkan ilmu/produk</div>
             </div>
             <hr class="styled">
-            <div class="table-responsive"><table class="study">
-              <tr>
-                <th>Jenis</th>
-                <th>Metode yang Cocok</th>
-              </tr>
-              <tr>
-                <td>Basic Research</td>
-                <td>Eksperimen &amp; Kualitatif</td>
-              </tr>
-              <tr>
-                <td>R&D</td>
-                <td>Survey, Kualitatif, Eksperimen</td>
-              </tr>
-              <tr>
-                <td>Applied Research</td>
-                <td>Eksperimen &amp; Survey</td>
-              </tr>
-            </table></div>
+            <div class="table-responsive">
+              <table class="study">
+                <tr>
+                  <th>Jenis</th>
+                  <th>Metode yang Cocok</th>
+                </tr>
+                <tr>
+                  <td>Basic Research</td>
+                  <td>Eksperimen &amp; Kualitatif</td>
+                </tr>
+                <tr>
+                  <td>R&D</td>
+                  <td>Survey, Kualitatif, Eksperimen</td>
+                </tr>
+                <tr>
+                  <td>Applied Research</td>
+                  <td>Eksperimen &amp; Survey</td>
+                </tr>
+              </table>
+            </div>
           </div>
         </div>
 
@@ -678,32 +721,34 @@
             <div class="card-title">Jenis Metode — Berdasarkan Tempat</div>
           </div>
           <div class="card-body">
-            <div class="table-responsive"><table class="study">
-              <tr>
-                <th>Metode</th>
-                <th>Tempat</th>
-                <th>Perlakuan</th>
-                <th>Data</th>
-              </tr>
-              <tr>
-                <td><strong>Eksperimen</strong></td>
-                <td>Laboratorium</td>
-                <td>Ada perlakuan</td>
-                <td>Kuantitatif</td>
-              </tr>
-              <tr>
-                <td><strong>Survey</strong></td>
-                <td>Alamiah (bukan lab)</td>
-                <td>Ada perlakuan</td>
-                <td>Kuantitatif</td>
-              </tr>
-              <tr>
-                <td><strong>Naturalistik</strong></td>
-                <td>Alamiah</td>
-                <td>Tidak ada perlakuan</td>
-                <td>Kualitatif</td>
-              </tr>
-            </table></div>
+            <div class="table-responsive">
+              <table class="study">
+                <tr>
+                  <th>Metode</th>
+                  <th>Tempat</th>
+                  <th>Perlakuan</th>
+                  <th>Data</th>
+                </tr>
+                <tr>
+                  <td><strong>Eksperimen</strong></td>
+                  <td>Laboratorium</td>
+                  <td>Ada perlakuan</td>
+                  <td>Kuantitatif</td>
+                </tr>
+                <tr>
+                  <td><strong>Survey</strong></td>
+                  <td>Alamiah (bukan lab)</td>
+                  <td>Ada perlakuan</td>
+                  <td>Kuantitatif</td>
+                </tr>
+                <tr>
+                  <td><strong>Naturalistik</strong></td>
+                  <td>Alamiah</td>
+                  <td>Tidak ada perlakuan</td>
+                  <td>Kualitatif</td>
+                </tr>
+              </table>
+            </div>
             <div class="highlight">
               <h4>Contoh Metode Eksperimen</h4>
               Pengaruh ruang kerja ber-AC terhadap produktivitas kerja
@@ -898,38 +943,40 @@
             <div class="card-title">Perbedaan Aksioma: Kuantitatif vs Kualitatif</div>
           </div>
           <div class="card-body">
-            <div class="table-responsive"><table class="study">
-              <tr>
-                <th>Aksioma Dasar</th>
-                <th>Metode Kuantitatif</th>
-                <th>Metode Kualitatif</th>
-              </tr>
-              <tr>
-                <td><strong>Sifat Realitas</strong></td>
-                <td>Dapat diklarifikasi, konkrit, teramati, terukur</td>
-                <td>Ganda, holistik, dinamis, hasil konstruksi &amp; pemahaman</td>
-              </tr>
-              <tr>
-                <td><strong>Hubungan Peneliti &amp; Objek</strong></td>
-                <td>Independen — supaya terbangun objektivitas</td>
-                <td>Interaktif dengan sumber data supaya memperoleh makna</td>
-              </tr>
-              <tr>
-                <td><strong>Hubungan Variabel</strong></td>
-                <td>Sebab-akibat (kausal): X → Y</td>
-                <td>Timbal balik/interaktif: X ↔ Y</td>
-              </tr>
-              <tr>
-                <td><strong>Generalisasi</strong></td>
-                <td>Cenderung membuat generalisasi</td>
-                <td>Transferability — hanya dalam ikatan konteks &amp; waktu</td>
-              </tr>
-              <tr>
-                <td><strong>Peranan Nilai</strong></td>
-                <td>Cenderung bebas nilai</td>
-                <td>Terikat nilai yang dibawa peneliti dan sumber data</td>
-              </tr>
-            </table></div>
+            <div class="table-responsive">
+              <table class="study">
+                <tr>
+                  <th>Aksioma Dasar</th>
+                  <th>Metode Kuantitatif</th>
+                  <th>Metode Kualitatif</th>
+                </tr>
+                <tr>
+                  <td><strong>Sifat Realitas</strong></td>
+                  <td>Dapat diklarifikasi, konkrit, teramati, terukur</td>
+                  <td>Ganda, holistik, dinamis, hasil konstruksi &amp; pemahaman</td>
+                </tr>
+                <tr>
+                  <td><strong>Hubungan Peneliti &amp; Objek</strong></td>
+                  <td>Independen — supaya terbangun objektivitas</td>
+                  <td>Interaktif dengan sumber data supaya memperoleh makna</td>
+                </tr>
+                <tr>
+                  <td><strong>Hubungan Variabel</strong></td>
+                  <td>Sebab-akibat (kausal): X → Y</td>
+                  <td>Timbal balik/interaktif: X ↔ Y</td>
+                </tr>
+                <tr>
+                  <td><strong>Generalisasi</strong></td>
+                  <td>Cenderung membuat generalisasi</td>
+                  <td>Transferability — hanya dalam ikatan konteks &amp; waktu</td>
+                </tr>
+                <tr>
+                  <td><strong>Peranan Nilai</strong></td>
+                  <td>Cenderung bebas nilai</td>
+                  <td>Terikat nilai yang dibawa peneliti dan sumber data</td>
+                </tr>
+              </table>
+            </div>
             <div class="two-col-content" style="margin-top:1rem;">
               <div class="col-box accent-border">
                 <h4>Metode Kuantitatif</h4>
@@ -1034,45 +1081,48 @@
               <strong>Variabel penelitian</strong> adalah segala sesuatu yang berbentuk apa saja yang ditetapkan oleh
               peneliti untuk dipelajari sehingga diperoleh informasi, kemudian ditarik kesimpulannya.
             </div>
-            <div class="table-responsive"><table class="study">
-              <tr>
-                <th>Variabel</th>
-                <th>Nama Lain</th>
-                <th>Penjelasan</th>
-                <th>Contoh</th>
-              </tr>
-              <tr>
-                <td><strong>Independen</strong></td>
-                <td>Bebas / Stimulus / Predictor / Antecedent</td>
-                <td>Mempengaruhi atau menjadi sebab perubahan variabel dependen</td>
-                <td>Komitmen Kerja</td>
-              </tr>
-              <tr>
-                <td><strong>Dependen</strong></td>
-                <td>Terikat / Output / Kriteria / Konsekuen</td>
-                <td>Dipengaruhi atau menjadi akibat karena adanya variabel bebas</td>
-                <td>Produktivitas Kerja</td>
-              </tr>
-              <tr>
-                <td><strong>Moderator</strong></td>
-                <td>—</td>
-                <td>Mempengaruhi (memperkuat/memperlemah) hubungan antara IV dan DV</td>
-                <td>Peranan pemimpin dalam iklim kerja memoderasi hubungan motivasi-produktivitas</td>
-              </tr>
-              <tr>
-                <td><strong>Intervening</strong></td>
-                <td>—</td>
-                <td>Secara teoritis mempengaruhi hubungan IV-DV secara tidak langsung; tidak dapat diamati/diukur</td>
-                <td>—</td>
-              </tr>
-              <tr>
-                <td><strong>Kontrol</strong></td>
-                <td>—</td>
-                <td>Dikendalikan/dibuat konstan agar IV tidak dipengaruhi faktor luar. Sering digunakan dalam penelitian
-                  komparatif</td>
-                <td>—</td>
-              </tr>
-            </table></div>
+            <div class="table-responsive">
+              <table class="study">
+                <tr>
+                  <th>Variabel</th>
+                  <th>Nama Lain</th>
+                  <th>Penjelasan</th>
+                  <th>Contoh</th>
+                </tr>
+                <tr>
+                  <td><strong>Independen</strong></td>
+                  <td>Bebas / Stimulus / Predictor / Antecedent</td>
+                  <td>Mempengaruhi atau menjadi sebab perubahan variabel dependen</td>
+                  <td>Komitmen Kerja</td>
+                </tr>
+                <tr>
+                  <td><strong>Dependen</strong></td>
+                  <td>Terikat / Output / Kriteria / Konsekuen</td>
+                  <td>Dipengaruhi atau menjadi akibat karena adanya variabel bebas</td>
+                  <td>Produktivitas Kerja</td>
+                </tr>
+                <tr>
+                  <td><strong>Moderator</strong></td>
+                  <td>—</td>
+                  <td>Mempengaruhi (memperkuat/memperlemah) hubungan antara IV dan DV</td>
+                  <td>Peranan pemimpin dalam iklim kerja memoderasi hubungan motivasi-produktivitas</td>
+                </tr>
+                <tr>
+                  <td><strong>Intervening</strong></td>
+                  <td>—</td>
+                  <td>Secara teoritis mempengaruhi hubungan IV-DV secara tidak langsung; tidak dapat diamati/diukur</td>
+                  <td>—</td>
+                </tr>
+                <tr>
+                  <td><strong>Kontrol</strong></td>
+                  <td>—</td>
+                  <td>Dikendalikan/dibuat konstan agar IV tidak dipengaruhi faktor luar. Sering digunakan dalam
+                    penelitian
+                    komparatif</td>
+                  <td>—</td>
+                </tr>
+              </table>
+            </div>
           </div>
         </div>
 
@@ -1291,25 +1341,26 @@
                 <td>Adakah hubungan signifikan antara tinggi badan pelayan toko dengan barang yang terjual?</td>
                 <td>H₀: ρ = 0 (tidak ada hubungan) / H₁: ρ ≠ 0 (ada hubungan)</td>
               </tr>
-            </table></div>
-            <div class="highlight" style="margin-top:1rem;">
-              <h4>Karakteristik Hipotesis yang Baik</h4>
-              <ul class="styled">
-                <li>Merupakan dugaan terhadap keadaan variabel mandiri, perbandingan, atau hubungan antar variabel</li>
-                <li>Dinyatakan dalam kalimat yang <strong>jelas</strong> — tidak menimbulkan berbagai penafsiran</li>
-                <li>Dapat <strong>diuji</strong> dengan data yang dikumpulkan dengan metode ilmiah</li>
-              </ul>
-            </div>
-            <hr class="styled">
-            <p class="small"><strong>Contoh Lengkap Hipotesis Asosiatif:</strong></p>
-            <ul class="styled" style="margin-top:0.4rem;">
-              <li>Rumusan Masalah: Adakah hubungan signifikan antara curah hujan dengan jumlah payung yang terjual?</li>
-              <li>Hipotesis Penelitian: Terdapat hubungan yang positif dan signifikan antara curah hujan dengan jumlah
-                payung yang terjual (bila curah hujan tinggi → semakin banyak payung terjual)</li>
-              <li>H₀: ρ = 0 (tidak ada hubungan) / H₁: ρ ≠ 0</li>
+            </table>
+          </div>
+          <div class="highlight" style="margin-top:1rem;">
+            <h4>Karakteristik Hipotesis yang Baik</h4>
+            <ul class="styled">
+              <li>Merupakan dugaan terhadap keadaan variabel mandiri, perbandingan, atau hubungan antar variabel</li>
+              <li>Dinyatakan dalam kalimat yang <strong>jelas</strong> — tidak menimbulkan berbagai penafsiran</li>
+              <li>Dapat <strong>diuji</strong> dengan data yang dikumpulkan dengan metode ilmiah</li>
             </ul>
           </div>
+          <hr class="styled">
+          <p class="small"><strong>Contoh Lengkap Hipotesis Asosiatif:</strong></p>
+          <ul class="styled" style="margin-top:0.4rem;">
+            <li>Rumusan Masalah: Adakah hubungan signifikan antara curah hujan dengan jumlah payung yang terjual?</li>
+            <li>Hipotesis Penelitian: Terdapat hubungan yang positif dan signifikan antara curah hujan dengan jumlah
+              payung yang terjual (bila curah hujan tinggi → semakin banyak payung terjual)</li>
+            <li>H₀: ρ = 0 (tidak ada hubungan) / H₁: ρ ≠ 0</li>
+          </ul>
         </div>
+      </div>
 
       </div>
     </section>
@@ -1327,32 +1378,34 @@
             <div class="card-title">Keterkaitan: Paradigma → Rumusan Masalah → Hipotesis</div>
           </div>
           <div class="card-body">
-            <div class="table-responsive"><table class="study">
-              <tr>
-                <th>Rumusan Masalah</th>
-                <th>Bentuk Hipotesis</th>
-                <th>Metode Analisis</th>
-                <th>Catatan</th>
-              </tr>
-              <tr>
-                <td>Deskriptif</td>
-                <td>Hipotesis Deskriptif</td>
-                <td>Statistik deskriptif (mean, %, dll)</td>
-                <td>Umumnya tidak dirumuskan hipotesisnya</td>
-              </tr>
-              <tr>
-                <td>Komparatif</td>
-                <td>Hipotesis Komparatif</td>
-                <td>Uji beda (t-test, ANOVA, dll)</td>
-                <td>Variabel sama, sampel berbeda</td>
-              </tr>
-              <tr>
-                <td>Asosiatif</td>
-                <td>Hipotesis Asosiatif</td>
-                <td>Korelasi, regresi</td>
-                <td>Hubungan 2+ variabel: ρ=0 vs ρ≠0</td>
-              </tr>
-            </table></div>
+            <div class="table-responsive">
+              <table class="study">
+                <tr>
+                  <th>Rumusan Masalah</th>
+                  <th>Bentuk Hipotesis</th>
+                  <th>Metode Analisis</th>
+                  <th>Catatan</th>
+                </tr>
+                <tr>
+                  <td>Deskriptif</td>
+                  <td>Hipotesis Deskriptif</td>
+                  <td>Statistik deskriptif (mean, %, dll)</td>
+                  <td>Umumnya tidak dirumuskan hipotesisnya</td>
+                </tr>
+                <tr>
+                  <td>Komparatif</td>
+                  <td>Hipotesis Komparatif</td>
+                  <td>Uji beda (t-test, ANOVA, dll)</td>
+                  <td>Variabel sama, sampel berbeda</td>
+                </tr>
+                <tr>
+                  <td>Asosiatif</td>
+                  <td>Hipotesis Asosiatif</td>
+                  <td>Korelasi, regresi</td>
+                  <td>Hubungan 2+ variabel: ρ=0 vs ρ≠0</td>
+                </tr>
+              </table>
+            </div>
           </div>
         </div>
 
@@ -1569,39 +1622,41 @@
               <span class="badge ink">3. Rating Scale</span>
               <span class="badge outline">4. Semantic Differential</span>
             </div>
-            <div class="table-responsive"><table class="study">
-              <tr>
-                <th>Skala</th>
-                <th>Karakteristik</th>
-                <th>Bentuk Jawaban</th>
-                <th>Skor</th>
-              </tr>
-              <tr>
-                <td><strong>Likert</strong></td>
-                <td>Mengukur sikap, pendapat, persepsi seseorang/kelompok tentang fenomena sosial</td>
-                <td>Sangat Setuju / Setuju / Ragu-ragu / Tidak Setuju / Sangat Tidak Setuju</td>
-                <td>5 / 4 / 3 / 2 / 1</td>
-              </tr>
-              <tr>
-                <td><strong>Guttman</strong></td>
-                <td>Jawaban bersifat tegas dan jelas (dikotomis)</td>
-                <td>Ya–Tidak / Benar–Salah / Pernah–Tidak Pernah / Positif–Negatif</td>
-                <td>Tertinggi: 1 / Terendah: 0</td>
-              </tr>
-              <tr>
-                <td><strong>Rating Scale</strong></td>
-                <td>Lebih fleksibel; mengukur sikap, status sosial ekonomi, pengetahuan, kemampuan, proses kegiatan,
-                  dll. Data mentah berupa angka → ditafsirkan kualitatif</td>
-                <td>Angka 1–4 (misal: 4=sangat baik, 3=cukup baik, 2=kurang baik, 1=sangat tidak baik)</td>
-                <td>Numerik → kualitatif</td>
-              </tr>
-              <tr>
-                <td><strong>Semantic Differential</strong></td>
-                <td>Dikembangkan oleh Osgood. Berbentuk satu garis kontinum dengan dua kutub berlawanan</td>
-                <td>Bersahabat ←5 4 3 2 1→ Tidak Bersahabat</td>
-                <td>5 (sangat positif) sampai 1 (sangat negatif) atau sebaliknya</td>
-              </tr>
-            </table></div>
+            <div class="table-responsive">
+              <table class="study">
+                <tr>
+                  <th>Skala</th>
+                  <th>Karakteristik</th>
+                  <th>Bentuk Jawaban</th>
+                  <th>Skor</th>
+                </tr>
+                <tr>
+                  <td><strong>Likert</strong></td>
+                  <td>Mengukur sikap, pendapat, persepsi seseorang/kelompok tentang fenomena sosial</td>
+                  <td>Sangat Setuju / Setuju / Ragu-ragu / Tidak Setuju / Sangat Tidak Setuju</td>
+                  <td>5 / 4 / 3 / 2 / 1</td>
+                </tr>
+                <tr>
+                  <td><strong>Guttman</strong></td>
+                  <td>Jawaban bersifat tegas dan jelas (dikotomis)</td>
+                  <td>Ya–Tidak / Benar–Salah / Pernah–Tidak Pernah / Positif–Negatif</td>
+                  <td>Tertinggi: 1 / Terendah: 0</td>
+                </tr>
+                <tr>
+                  <td><strong>Rating Scale</strong></td>
+                  <td>Lebih fleksibel; mengukur sikap, status sosial ekonomi, pengetahuan, kemampuan, proses kegiatan,
+                    dll. Data mentah berupa angka → ditafsirkan kualitatif</td>
+                  <td>Angka 1–4 (misal: 4=sangat baik, 3=cukup baik, 2=kurang baik, 1=sangat tidak baik)</td>
+                  <td>Numerik → kualitatif</td>
+                </tr>
+                <tr>
+                  <td><strong>Semantic Differential</strong></td>
+                  <td>Dikembangkan oleh Osgood. Berbentuk satu garis kontinum dengan dua kutub berlawanan</td>
+                  <td>Bersahabat ←5 4 3 2 1→ Tidak Bersahabat</td>
+                  <td>5 (sangat positif) sampai 1 (sangat negatif) atau sebaliknya</td>
+                </tr>
+              </table>
+            </div>
           </div>
         </div>
 
@@ -1613,48 +1668,50 @@
           </div>
           <div class="card-body">
             <p class="small" style="margin-bottom:0.5rem;">100 orang karyawan menilai prosedur kerja baru:</p>
-            <div class="table-responsive"><table class="study">
-              <tr>
-                <th>Jawaban</th>
-                <th>Jumlah</th>
-                <th>× Skor</th>
-                <th>Total</th>
-              </tr>
-              <tr>
-                <td>SS (5)</td>
-                <td>25</td>
-                <td>×5</td>
-                <td>125</td>
-              </tr>
-              <tr>
-                <td>ST (4)</td>
-                <td>40</td>
-                <td>×4</td>
-                <td>160</td>
-              </tr>
-              <tr>
-                <td>RG (3)</td>
-                <td>5</td>
-                <td>×3</td>
-                <td>15</td>
-              </tr>
-              <tr>
-                <td>TS (2)</td>
-                <td>20</td>
-                <td>×2</td>
-                <td>40</td>
-              </tr>
-              <tr>
-                <td>STS (1)</td>
-                <td>10</td>
-                <td>×1</td>
-                <td>10</td>
-              </tr>
-              <tr>
-                <td colspan="3"><strong>Jumlah Total</strong></td>
-                <td><strong>350</strong></td>
-              </tr>
-            </table></div>
+            <div class="table-responsive">
+              <table class="study">
+                <tr>
+                  <th>Jawaban</th>
+                  <th>Jumlah</th>
+                  <th>× Skor</th>
+                  <th>Total</th>
+                </tr>
+                <tr>
+                  <td>SS (5)</td>
+                  <td>25</td>
+                  <td>×5</td>
+                  <td>125</td>
+                </tr>
+                <tr>
+                  <td>ST (4)</td>
+                  <td>40</td>
+                  <td>×4</td>
+                  <td>160</td>
+                </tr>
+                <tr>
+                  <td>RG (3)</td>
+                  <td>5</td>
+                  <td>×3</td>
+                  <td>15</td>
+                </tr>
+                <tr>
+                  <td>TS (2)</td>
+                  <td>20</td>
+                  <td>×2</td>
+                  <td>40</td>
+                </tr>
+                <tr>
+                  <td>STS (1)</td>
+                  <td>10</td>
+                  <td>×1</td>
+                  <td>10</td>
+                </tr>
+                <tr>
+                  <td colspan="3"><strong>Jumlah Total</strong></td>
+                  <td><strong>350</strong></td>
+                </tr>
+              </table>
+            </div>
             <div class="scale-bar" style="margin-top:1rem;"></div>
             <div class="scale-labels">
               <span>STS (100)</span>
