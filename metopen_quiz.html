@@ -1078,10 +1078,23 @@
             // Use already populated quizQuestions (session questions)
             const printableHtml = buildPrintFriendlyContent();
 
-            // 1. Prepare hidden container
-            const element = document.getElementById('print-only-content');
-            element.innerHTML = printableHtml;
-            element.style.display = 'block'; // Must be visible for capture
+            // 1. Create a temporary, detached container for clean capture
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = printableHtml;
+
+            // Force styles to ensure html2canvas/jsPDF get accurate measurements
+            Object.assign(tempDiv.style, {
+                position: 'absolute',
+                left: '-9999px',
+                top: '0',
+                width: '800px',
+                background: 'white',
+                color: 'black',
+                zIndex: '-1',
+                padding: '0',
+                margin: '0'
+            });
+            document.body.appendChild(tempDiv);
 
             const opt = {
                 margin: [10, 10, 20, 10],
@@ -1091,19 +1104,20 @@
                     scale: 2,
                     useCORS: true,
                     logging: false,
-                    width: 800,
-                    windowWidth: 800
+                    letterRendering: true,
+                    scrollY: 0,
+                    scrollX: 0
                 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
                 pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
             };
 
-            // 2. Generate PDF
-            html2pdf().set(opt).from(element).save().then(() => {
-                element.style.display = 'none';
+            // 2. Generate PDF from the detached element
+            html2pdf().set(opt).from(tempDiv).save().then(() => {
+                document.body.removeChild(tempDiv);
             }).catch(err => {
                 console.error("PDF generation error:", err);
-                element.style.display = 'none';
+                if (document.body.contains(tempDiv)) document.body.removeChild(tempDiv);
                 alert("Gagal membuat PDF. Silakan coba lagi.");
             });
         }
