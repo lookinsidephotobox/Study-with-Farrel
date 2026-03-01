@@ -16,6 +16,8 @@
     <!-- No more html2pdf.js needed, using window.print() -->
     <!-- canvas-confetti for celebration -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- html2canvas and jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="question_bank_100.js"></script>
 
     <style>
@@ -1078,57 +1080,34 @@
             quizQuestions = filter === 'all' ? bank : bank.filter(q => q.cat === filter);
             const printableHtml = buildPrintFriendlyContent();
 
-            // 1. Open new window for native printing
-            const w = window.open('', '_blank');
-            w.document.open();
-            w.document.write(`
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>Kuis Metopen P1-P5</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
-    <style>
-        @page { size: A4; margin: 15mm; }
-        body { 
-            margin: 0; 
-            padding: 0; 
-            background: #fff; 
-            font-family: 'DM Sans', sans-serif; 
-            color: #111; 
-            line-height: 1.6; 
-            overflow: visible !important;
-        }
-        .page-break { page-break-before: always; }
-        h1, h2 { font-family: 'Playfair Display', serif; }
-        .print-container { width: 100%; max-width: 800px; margin: 0 auto; overflow: visible !important; }
-        * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    </style>
-</head>
-<body>
-    <div class="print-container">
-        ${printableHtml}
-    </div>
-    <script>
-        function doPrint() {
-            window.focus();
-            setTimeout(() => {
-                window.print();
-                // window.close();
-            }, 500);
-        }
+            // 1. Prepare hidden container
+            const element = document.getElementById('print-only-content');
+            element.innerHTML = printableHtml;
+            element.style.display = 'block'; // Must be visible for capture
 
-        // Wait for fonts to be ready before printing to avoid blank or ugly layout
-        if (document.fonts) {
-            document.fonts.ready.then(doPrint);
-        } else {
-            window.onload = doPrint;
-        }
-    <` + `/script>
-</body>
-</html>
-            `);
-            w.document.close();
+            const opt = {
+                margin: [10, 10, 20, 10],
+                filename: 'Kuis_Metopen_P1_P5.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    width: 800,
+                    windowWidth: 800
+                },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+
+            // 2. Generate PDF
+            html2pdf().set(opt).from(element).save().then(() => {
+                element.style.display = 'none';
+            }).catch(err => {
+                console.error("PDF generation error:", err);
+                element.style.display = 'none';
+                alert("Gagal membuat PDF. Silakan coba lagi.");
+            });
         }
 
         // --- PWA Service Worker Registration ---
