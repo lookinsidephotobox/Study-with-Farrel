@@ -778,18 +778,28 @@
         }
 
         function downloadPDF() {
-            document.getElementById('print-only-content').style.display = 'block';
             const element = document.getElementById('print-only-content');
+            element.style.display = 'block';
+            element.style.width = '800px';
+
             var opt = {
                 margin: [10, 10, 20, 10],
                 filename: 'Isian_Metopen_P1_P5.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, logging: false },
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    windowWidth: 800,
+                    windowHeight: 600,
+                    scrollY: 0
+                },
                 pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
             html2pdf().set(opt).from(element).save().then(() => {
-                document.getElementById('print-only-content').style.display = 'none';
+                element.style.display = 'none';
+                element.style.width = '';
             });
         }
 

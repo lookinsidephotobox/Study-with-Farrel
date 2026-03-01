@@ -800,24 +800,29 @@
 
         function downloadPDF() {
             // Reveal print only content
-            document.getElementById('print-only-content').style.display = 'block';
-            // Hide UI elements in screen-result that we don't want (or let the CSS handle it, but html2pdf might grab them if we just pass the element)
-
-            const element = document.getElementById('print-only-content'); // We just print the pure text version
+            const element = document.getElementById('print-only-content');
+            element.style.display = 'block';
+            element.style.width = '800px'; // Force fixed width for consistent layout
 
             var opt = {
                 margin: [10, 10, 20, 10], // t, l, b, r
                 filename: 'Kuis_Metopen_P1_P5.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, logging: false },
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    windowWidth: 800,
+                    windowHeight: 600,
+                    scrollY: 0
+                },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
                 pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
             };
 
-            // New Promise-based usage:
             html2pdf().set(opt).from(element).save().then(() => {
-                // hide it again
-                document.getElementById('print-only-content').style.display = 'none';
+                element.style.display = 'none';
+                element.style.width = ''; // Reset width
             });
         }
 
