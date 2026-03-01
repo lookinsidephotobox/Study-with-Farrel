@@ -10,6 +10,7 @@
         rel="stylesheet">
     <!-- html2pdf for PDF generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="question_bank_100.js"></script>
 
     <style>
         :root {
@@ -67,21 +68,45 @@
         nav {
             background: var(--cream);
             border-bottom: 2px solid var(--border);
-            padding: 0.5rem 1rem;
+            padding: 0.75rem;
             display: flex;
             justify-content: center;
+            gap: 0.75rem;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        nav::-webkit-scrollbar {
+            display: none;
         }
 
         nav a {
-            font-size: 0.85rem;
-            font-weight: 600;
+            font-size: 0.7rem;
+            font-weight: 700;
             text-transform: uppercase;
             text-decoration: none;
             color: var(--accent);
-            padding: 0.5rem 1rem;
-            border: 1.5px solid var(--accent);
-            border-radius: 4px;
+            padding: 0.75rem;
+            border: 1.5px solid var(--border);
+            border-radius: 6px;
+            background: var(--card-bg);
             transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 100px;
+            text-align: center;
+            line-height: 1.3;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+        }
+
+        nav a span {
+            font-size: 1.5rem;
+            margin-bottom: 0.4rem;
         }
 
         nav a:hover {
@@ -352,10 +377,10 @@
     </header>
 
     <nav>
-        <a href="index.html">🏠 Menu Utama</a>
-        <a href="metopen_study_cards.html" style="margin-left:1rem;">← Kembali ke Kartu Belajar</a>
-        <a href="metopen_quiz.html" style="margin-left:1rem;">📝 Kuis</a>
-        <a href="metopen_isian.html" style="margin-left:1rem;">✍️ Isian Singkat</a>
+        <a href="index.html"><span>🏠</span> Menu Utama</a>
+        <a href="metopen_study_cards.html"><span>←</span> Kembali ke Kartu Belajar</a>
+        <a href="metopen_quiz.html"><span>🎯</span> Kuis</a>
+        <a href="metopen_isian.html"><span>✍️</span> Isian Singkat</a>
     </nav>
 
     <main id="main">
@@ -450,219 +475,8 @@
     </main>
 
     <script>
-        // QUESTION BANK (Same as Quiz)
-        const bank = [
-            {
-                id: "q1", cat: "P1",
-                text: "Apa tujuan penelitian menurut Prof. Sugiyono yang bertujuan untuk memperdalam dan memperluas pengetahuan yang telah ada?",
-                options: ["Penemuan", "Pembuktian", "Pengembangan", "Deskriptif", "Eksperimen"],
-                correct: 2,
-                explanation: "Pengembangan bertujuan memperdalam dan memperluas pengetahuan yang telah ada, berbeda dengan penemuan (hal baru) dan pembuktian (menguji keraguan)."
-            },
-            {
-                id: "q2", cat: "P1",
-                text: "Berikut ini yang termasuk dalam proses Scientific Research pada tahap pertama adalah...",
-                options: ["Analisis Data", "Definisi Konseptual", "Hipotesis", "Formulasi Topik", "Pengumpulan Data"],
-                correct: 3,
-                explanation: "8 Langkah Scientific Research diawali dengan Formulasi Topik, kemudian Hipotesis, Definisi Konseptual, Operasional, Pengumpulan Data, Analisis, Uji, dan Kesimpulan."
-            },
-            {
-                id: "q3", cat: "P1",
-                text: "Penelitian dasar (Basic Research) yang berfokus pada penemuan ilmu baru paling cocok menggunakan metode...",
-                options: ["Eksperimen & Survey", "Survey & Kualitatif", "Eksperimen & Kualitatif", "Naturalistik & Survey", "R&D & Deskriptif"],
-                correct: 2,
-                explanation: "Basic research (penemuan ilmu baru) paling cocok dengan metode Eksperimen & Kualitatif."
-            },
-            {
-                id: "q4", cat: "P2",
-                text: "Dalam aksioma penelitian, sifat realitas pada metode Kualitatif adalah...",
-                options: ["Konkrit, teramati, terukur", "Ganda, holistik, dinamis", "Tunggal, statis, prediktif", "Bebas nilai", "Hubungan sebab-akibat (kausal)"],
-                correct: 1,
-                explanation: "Menurut perbandingan aksioma, metode kualitatif melihat realitas sebagai ganda, holistik, dinamis, hasil konstruksi & pemahaman (sedangkan kuantitatif konkrit & terukur)."
-            },
-            {
-                id: "q5", cat: "P2",
-                text: "Variabel yang secara teoritis mempengaruhi (memperkuat atau memperlemah) hubungan antara variabel independen dan dependen disebut variabel...",
-                options: ["Intervening", "Kontrol", "Moderator", "Asosiatif", "Komparatif"],
-                correct: 2,
-                explanation: "Variabel Moderator adalah variabel yang mempengaruhi (memperkuat/memperlemah) hubungan antara IV dan DV dan dapat diukur. (Intervening tidak dapat diukur/diamati langsung)."
-            },
-            {
-                id: "q6", cat: "P2",
-                text: "Rumusan masalah yang menanyakan hubungan antara dua variabel atau lebih disebut rumusan masalah...",
-                options: ["Komparatif", "Asosiatif", "Deskriptif", "Eksploratif", "Deduktif"],
-                correct: 1,
-                explanation: "Asosiatif adalah rumusan masalah yang menanyakan hubungan dua variabel/lebih (contoh: hubungan antara motivasi belajar dan indeks prestasi)."
-            },
-            {
-                id: "q7", cat: "P3",
-                text: "Teknik pengambilan sampel yang memberikan peluang yang sama bagi setiap anggota populasi untuk dipilih dinamakan...",
-                options: ["Non Probability Sampling", "Quota Sampling", "Probability Sampling", "Snowball Sampling", "Purposive Sampling"],
-                correct: 2,
-                explanation: "Probability Sampling adalah teknik yang memberikan peluang sama bagi setiap anggota populasi untuk dipilih (contoh: Simple Random Sampling)."
-            },
-            {
-                id: "q8", cat: "P3",
-                text: "Menurut Roscoe (1982), ukuran sampel yang layak dalam penelitian eksperimen sederhana untuk grup eksperimen dan grup kontrol masing-masing adalah...",
-                options: ["30 s/d 500 orang", "Minimal 30 orang per kategori", "Minimal 10 kali jumlah variabel", "10 - 20 orang", "Seluruh anggota populasi"],
-                correct: 3,
-                explanation: "Untuk eksperimen sederhana (kelompok eksperimen + kontrol), Roscoe menyarankan ukuran sampel yang kecil/layak yakni masing-masing 10–20 orang."
-            },
-            {
-                id: "q9", cat: "P3",
-                text: "Hipotesis statistik digunakan apabila penelitian menggunakan data yang berasal dari...",
-                options: ["Sensus (Seluruh Populasi)", "Sampel", "Literatur/Studi Pustaka", "Wawancara mendalam terisolasi", "Data Sekunder murni"],
-                correct: 1,
-                explanation: "Hipotesis statistik digunakan HANYA jika penelitian bekerja menggunakan sampel, untuk membedakan apakah nilai sampel merepresentasikan populasi parameternya."
-            },
-            {
-                id: "q10", cat: "P4",
-                text: "Hipotesis yang menyatakan 'Adanya perbedaan penghasilan yang signifikan antara petani dan nelayan' termasuk dalam jenis hipotesis...",
-                options: ["Deskriptif", "Asosiatif", "Komparatif", "Kausal", "Struktural"],
-                correct: 2,
-                explanation: "Hipotesis komparatif adalah dugaan tentang perbedaan suatu variabel pada sampel/populasi yang berbeda (petani vs nelayan)."
-            },
-            {
-                id: "q11", cat: "P4",
-                text: "Jika rumusan masalahnya adalah Asosiatif (mencari hubungan), maka metode analisis data statistik yang paling tepat digunakan adalah...",
-                options: ["Statistik deskriptif (mean, persentase)", "Uji beda (t-test, ANOVA)", "Korelasi dan regresi", "Non-parametrik Wilcoxon", "Generalisasi Proposi"],
-                correct: 2,
-                explanation: "Masalah asosiatif (hubungan) diukur menggunakan alat analisis Korelasi (hubungan) atau Regresi (pengaruh)."
-            },
-            {
-                id: "q12", cat: "P5",
-                text: "Skala pengukuran yang hanya memiliki jawaban tegas dikotomis (seperti Ya-Tidak / Benar-Salah) adalah jenis skala...",
-                options: ["Skala Likert", "Rating Scale", "Semantic Differential", "Skala Guttman", "Thurstone"],
-                correct: 3,
-                explanation: "Skala Guttman memberikan jawaban tegas dan jelas (dikotomis), misal Ya–Tidak, Benar-Salah, Positif-Negatif."
-            },
-            {
-                id: "q13", cat: "P5",
-                text: "Mengukur sikap, persepsi tentang fenomena sosial dengan tingkat jawaban dari 'Sangat Setuju' sampai 'Sangat Tidak Setuju' merupakan fungsi dari...",
-                options: ["Skala Guttman", "Semantic Differential", "Skala Likert", "Rating Scale", "Skala Ordinal Nominal"],
-                correct: 2,
-                explanation: "Skala Likert digunakan untuk mengukur sikap, persepsi, dan pendapat fenomena sosial dengan tingkatan (SS, ST, RG, TS, STS)."
-            },
-            {
-                id: "q14", cat: "P5",
-                text: "Mendapatkan data primer dapat dilakukan dengan metode pengumpulan di bawah ini, kecuali...",
-                options: ["Kuesioner", "Wawancara kelompok fokus (FGD)", "Observasi lapangan", "Membaca laporan statistik Biro Pusat Statistik (BPS)", "Studi Kasus individual"],
-                correct: 3,
-                explanation: "Laporan BPS, dokumen perusahaan, dan jurnal adalah sumber Data Sekunder, bukan Primer."
-            },
-            {
-                id: "q15", cat: "P5",
-                text: "The Response Process dalam kuesioner terdiri dari 4 langkah potensial error. Langkah pertama yang harus dilakukan responden adalah...",
-                options: ["Memahami pertanyaan", "Membaca pertanyaan", "Memilih opsi jawaban", "Menerjemahkan ke kategori nilai", "Mengingat pengalaman relevan"],
-                correct: 1,
-                explanation: "The Response Process: 1) Pertanyaan harus dibaca, 2) Pertanyaan dipahami, 3) Membuat respons, 4) Diterjemahkan ke kategori yang ada."
-            },
-            {
-                id: "q16", cat: "P1",
-                text: "Penelitian yang berfokus pada penerapan ilmu/produk untuk memecahkan masalah kehidupan sesungguhnya disebut penelitian...",
-                options: ["Dasar (Basic)", "Pengembangan (R&D)", "Terapan (Applied)", "Eksperimental Murni", "Naturalistik"],
-                correct: 2,
-                explanation: "Penelitian terapan (Applied Research) bertujuan untuk menerapkan penelitian di lapangan/dunia nyata secara langsung, berlawanan dengan penelitian dasar yang berfokus ke penemuan teori baru."
-            },
-            {
-                id: "q17", cat: "P1",
-                text: "Metode penelitian yang tempatnya alamiah dan TIDAK ADA perlakuan dari peneliti, di mana peneliti mengumpulkan data asli berdasarkan pandangan sumber data, adalah...",
-                options: ["Eksperimen", "Kuantitatif", "Survey", "Naturalistik", "Grounded Theory"],
-                correct: 3,
-                explanation: "Metode naturalistik (atau kualitatif) melihat situasi berdasarkan kenyataan (realitas) tanpa memanipulasi atau memberikan 'treatment' eksperimen kepada partisipan."
-            },
-            {
-                id: "q18", cat: "P2",
-                text: "Variabel yang secara teoritis mempengaruhi hubungan antara variabel independen menjadi tidak langsung dan tidak dapat diamati/diukur secara nyata adalah...",
-                options: ["Variabel Moderator", "Variabel Bebas", "Variabel Intervening", "Variabel Kontrol", "Variabel Dependen"],
-                correct: 2,
-                explanation: "Variabel Intervening bertindak sebagai penengah dan mempengaruhi tetapi bersifat sangat konseptual dan tidak dapat diamati secara langsung."
-            },
-            {
-                id: "q19", cat: "P3",
-                text: "Pengambilan anggota sampel secara acak tanpa memperhatikan strata yang ada di populasi karena dianggap homogen dinamakan...",
-                options: ["Simple Random Sampling", "Proportionate Stratified Random", "Cluster Sampling", "Snowball Sampling", "Purposive Sampling"],
-                correct: 0,
-                explanation: "Simple Random Sampling dilakukan ketika populasi bersifat seragam atau homogen tanpa strata khusus."
-            },
-            {
-                id: "q20", cat: "P5",
-                text: "Skala pengukuran yang dikembangkan oleh Osgood dan disusun dalam satu garis kontinuum dari sangat positif di kanan ke sangat negatif di kiri disebut...",
-                options: ["Skala Likert", "Skala Guttman", "Rating Scale", "Semantic Differential", "Skala Thurstone"],
-                correct: 3,
-                explanation: "Semantic Differential digunakan untuk mengukur sikap dengan memberikan opsi antonim ekstrem pada dua kutub ujung rentang nilai (kontinuum)."
-            },
-            {
-                id: "q21", cat: "P1",
-                text: "Proses yang terorganisir, sistematis, berdasarkan data, kritis, objektif, investigasi terhadap suatu permasalahan, dalam rangka menemukan jawaban/solusi yang tepat adalah definisi penelitian menurut...",
-                options: ["Prof. Dr. Sugiyono", "Jovita Kaur", "Roscoe", "Osgood", "Thurstone"],
-                correct: 1,
-                explanation: "Definisi Jovita Kaur menekankan pada proses sistematis, berbasis data, dan pencarian solusi yang objektif."
-            },
-            {
-                id: "q22", cat: "P1",
-                text: "Menurut Prof. Sugiyono, penelitian yang bertujuan untuk membuktikan adanya keragu-raguan terhadap informasi atau pengetahuan tertentu disebut...",
-                options: ["Penemuan (Discovery)", "Pengembangan (Development)", "Pembuktian (Verification)", "Penerapan (Applied)", "Eksplorasi (Exploration)"],
-                correct: 2,
-                explanation: "Penemuan untuk hal baru, pembuktian (verification) untuk menguji keragu-raguan, dan pengembangan untuk memperdalam ilmu yang sudah ada."
-            },
-            {
-                id: "q23", cat: "P1",
-                text: "Data yang baik harus memiliki derajat ketepatan antara data yang sesungguhnya terjadi pada objek dengan data yang dikumpulkan oleh peneliti. Persyaratan data ini disebut...",
-                options: ["Reliabel", "Objektif", "Sistematis", "Valid", "Representatif"],
-                correct: 3,
-                explanation: "Valid berarti memiliki derajat ketepatan. Reliabel berarti konsisten, objektif berarti bebas dari bias peneliti."
-            },
-            {
-                id: "q24", cat: "P2",
-                text: "Hubungan antara peneliti dengan yang diteliti pada metode penelitian Kuantitatif adalah...",
-                options: ["Interaktif supaya memperoleh makna", "Independen supaya terbangun objektivitas", "Saling bergantungan (Dependen)", "Timbal balik / resiprokal", "Terikat nilai-nilai peneliti"],
-                correct: 1,
-                explanation: "Dalam penelitian kuantitatif, peneliti harus bersifat independen dan menjaga jarak agar objektivitas terbangun. Sebaliknya, di kualitatif, peneliti harus interaktif untuk menggali makna terdalam."
-            },
-            {
-                id: "q25", cat: "P2",
-                text: "Langkah terpenting dalam merumuskan masalah ketika ingin membandingkan kualitas manajemen di perusahaan A dan perusahaan B menggunakan rumusan masalah bentuk...",
-                options: ["Asosiatif", "Deskriptif", "Komparatif", "Eksploratif", "Struktural"],
-                correct: 2,
-                explanation: "Rumusan komparatif digunakan untuk membandingkan keadaan variabel yang sama pada sampel, populasi, atau waktu yang berbeda."
-            },
-            {
-                id: "q26", cat: "P2",
-                text: "Variabel yang dikendalikan atau dibuat konstan sehingga pengaruh variabel independen terhadap dependen tidak dipengaruhi faktor luar disebut...",
-                options: ["Variabel Moderator", "Variabel Intervening", "Variabel Kontrol", "Variabel Bebas", "Variabel Konsekuen"],
-                correct: 2,
-                explanation: "Variabel kontrol sering digunakan oleh peneliti terutama pada eksperimen atau studi komparatif untuk menetralkan faktor luar yang bisa mengganggu hubungan antar variabel utama."
-            },
-            {
-                id: "q27", cat: "P2",
-                text: "Pola pikir yang menunjukkan hubungan antara variabel yang akan diteliti yang sekaligus mencerminkan rumusan masalah, teori, hipotesis dan teknik analisis statistik disebut...",
-                options: ["Landasan Teori", "Kerangka Berpikir", "Paradigma Penelitian", "Desain Eksperimen", "Conceptual Definition"],
-                correct: 2,
-                explanation: "Paradigma Penelitian adalah cetak biru atau pola pikir hubungan variabel yang digunakan untuk menentukan jumlah rumusan masalah, teori, hipotesis, dan jenis analisis statistik."
-            },
-            {
-                id: "q28", cat: "P3",
-                text: "Penentuan sampel berdasarkan kebetulan (siapa saja yang secara kebetulan bertemu dengan peneliti dan dianggap cocok) adalah teknik...",
-                options: ["Sampling Purposive", "Sampling Sistematis", "Sampling Insidental", "Snowball Sampling", "Sampling Kuota"],
-                correct: 2,
-                explanation: "Sampling Insidental (atau Aksidental) bersifat sangat spontan mengambil siapa saja yang bersedia dan ditemui peneliti pada saat itu tanpa rencana partisipan khusus yang rinci."
-            },
-            {
-                id: "q29", cat: "P5",
-                text: "Dalam perhitungan skala Likert dengan 100 responden, jika diasumsikan seluruh responden menjawab 'Sangat Setuju' (skor 5), maka besarnya Skor Ideal (Kriterium) adalah...",
-                options: ["100", "500", "1000", "70", "350"],
-                correct: 1,
-                explanation: "Skor Ideal (Kriterium Maksimal) dicapai apabila semua responden memberikan skor tertinggi (5 x 100 = 500)."
-            },
-            {
-                id: "q30", cat: "P5",
-                text: "Langkah pertama dalam proses pembuatan kuesioner adalah...",
-                options: ["Memutuskan jenis kuesioner yang akan digunakan", "Membuat draf pertama", "Pra-pengujian (Pre-test) dan revisi", "Mengidentifikasi informasi apa yang dibutuhkan", "Menentukan prosedur penggunaannya"],
-                correct: 3,
-                explanation: "Identifikasi informasi apa yang dibutuhkan adalah tahapan fundamental paling pertama sebelum memutuskan jenis kuesioner apalagi membuat draf inti pertanyaannya."
-            }
-        ];
+        // QUESTION BANK (Loaded from external file)
+        // const bank = [...]; // Inline bank removed
 
         // STATE
         let fcQuestions = [];
@@ -747,7 +561,12 @@
         function buildPrintFriendlyContent() {
             // Generate a printable version of the entire quiz as an ESSAY
             let html = `
-      <div style="font-family: serif; color: #000;">
+      <div style="font-family: serif; color: #000; position: relative; padding: 10mm 5mm;">
+        <!-- Header -->
+        <div style="text-align: right; font-size: 8pt; color: #666; margin-bottom: 5mm; border-bottom: 0.5pt solid #eee; padding-bottom: 2mm;">
+            Farrel Ananta Putra — Metodologi Penelitian
+        </div>
+
         <h1 style="text-align:center; border-bottom: 2px solid #000; padding-bottom: 1rem; margin-bottom: 2rem;">Latihan Esai Metodologi Penelitian</h1>
         <div style="margin-bottom: 3rem;">
     `;
@@ -786,7 +605,12 @@
       `;
             });
 
-            html += `</div>`; // end font wrapper
+            html += `
+        <!-- Footer -->
+        <div style="text-align: center; font-size: 8pt; color: #888; margin-top: 10mm; border-top: 0.5pt solid #eee; padding-top: 3mm;">
+            © Farrel Ananta Putra | Metodologi Penelitian Study Guide
+        </div>
+      </div>`; // end font wrapper
 
             document.getElementById('print-only-content').innerHTML = html;
         }
@@ -797,11 +621,12 @@
             const element = document.getElementById('print-only-content');
 
             var opt = {
-                margin: 15,
+                margin: [10, 10, 20, 10], // t, l, b, r
                 filename: 'Flashcards_Esai_Metopen_P1_P5.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                html2canvas: { scale: 2, useCORS: true, logging: false },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
             };
 
             html2pdf().set(opt).from(element).save().then(() => {

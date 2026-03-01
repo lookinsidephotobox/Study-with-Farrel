@@ -86,10 +86,12 @@
     nav {
       background: var(--cream);
       border-bottom: 2px solid var(--border);
-      padding: 0 1rem;
+      padding: 0.75rem;
       display: flex;
-      gap: 0;
+      justify-content: center;
+      gap: 0.75rem;
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
       position: sticky;
       top: 0;
@@ -101,30 +103,46 @@
       display: none;
     }
 
-    nav button {
+    nav button,
+    nav a {
       font-family: 'DM Sans', sans-serif;
-      font-size: 0.78rem;
-      font-weight: 500;
-      letter-spacing: 0.04em;
+      font-size: 0.7rem;
+      font-weight: 700;
       text-transform: uppercase;
-      border: none;
-      background: none;
+      text-decoration: none;
       color: var(--muted);
-      padding: 1rem 1.2rem;
-      cursor: pointer;
-      white-space: nowrap;
-      border-bottom: 3px solid transparent;
+      padding: 0.75rem;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      background: var(--card-bg);
       transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100px;
+      height: 100px;
+      text-align: center;
+      line-height: 1.3;
+      flex-shrink: 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
     }
 
-    nav button:hover {
+    nav button:hover,
+    nav a:hover {
+      background: var(--tag-bg);
       color: var(--ink);
     }
 
     nav button.active {
-      color: var(--accent);
-      border-bottom-color: var(--accent);
-      font-weight: 600;
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    nav .nav-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.4rem;
     }
 
     /* MAIN */
@@ -530,23 +548,15 @@
   </header>
 
   <nav id="nav">
-    <button class="active" onclick="show('p1')">P1: Konsep Dasar</button>
-    <button onclick="show('p2')">P2: Kuantitatif vs Kualitatif</button>
-    <button onclick="show('p3')">P3: Populasi & Sampel</button>
-    <button onclick="show('p4')">P4: Variabel & Paradigma</button>
-    <button onclick="show('p5')">P5: Data & Pengukuran</button>
-    <a href="index.html"
-      style="font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--accent);padding:1rem 0.5rem;text-decoration:none;display:flex;align-items:center;">🏠
-      Menu Utama</a>
-    <a href="metopen_quiz.html"
-      style="font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--accent);padding:1rem 0.5rem;text-decoration:none;display:flex;align-items:center;">🎯
-      Kuis</a>
-    <a href="metopen_flashcards.html"
-      style="font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--accent);padding:1rem 0.5rem;text-decoration:none;display:flex;align-items:center;">🧠
-      Flashcards</a>
-    <a href="metopen_isian.html"
-      style="font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--accent);padding:1rem 0.5rem;text-decoration:none;display:flex;align-items:center;">✍️
-      Isian Singkat</a>
+    <button class="active" onclick="show('p1')"><span class="nav-icon">1️⃣</span> P1: Konsep Dasar</button>
+    <button onclick="show('p2')"><span class="nav-icon">2️⃣</span> P2: Kuantum vs Kualitatif</button>
+    <button onclick="show('p3')"><span class="nav-icon">3️⃣</span> P3: Populasi & Sampel</button>
+    <button onclick="show('p4')"><span class="nav-icon">4️⃣</span> P4: Variabel & Paradigma</button>
+    <button onclick="show('p5')"><span class="nav-icon">5️⃣</span> P5: Data & Pengukuran</button>
+    <a href="index.html"><span class="nav-icon">🏠</span> Menu Utama</a>
+    <a href="metopen_quiz.html"><span class="nav-icon">🎯</span> Kuis</a>
+    <a href="metopen_flashcards.html"><span class="nav-icon">🧠</span> Flashcards</a>
+    <a href="metopen_isian.html"><span class="nav-icon">✍️</span> Isian Singkat</a>
   </nav>
 
   <main>
