@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Cards — Metodologi Penelitian</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0f0e0b;
+      --paper: #f5f0e8;
+      --cream: #ede8da;
+      --accent: #c8401e;
+      --gold: #b8923a;
+      --muted: #6b6456;
+      --light: #faf8f3;
+      --card-bg: #ffffff;
+      --border: #d4cdbf;
+      --tag-bg: #f0ebe0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--ink);
+      padding: 3rem 2rem 2.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(45deg,
+          transparent,
+          transparent 10px,
+          rgba(255, 255, 255, 0.02) 10px,
+          rgba(255, 255, 255, 0.02) 20px);
+    }
+
+    header .label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+    }
+
+    header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      color: #fff;
+      line-height: 1.1;
+    }
+
+    header h1 span {
+      color: var(--gold);
+    }
+
+    header p {
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 0.75rem;
+      font-size: 0.9rem;
+      font-weight: 300;
+    }
+
+    /* NAV */
+    nav {
+      background: var(--cream);
+      border-bottom: 2px solid var(--border);
+      padding: 0 1rem;
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    nav button {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border: none;
+      background: none;
+      color: var(--muted);
+      padding: 1rem 1.2rem;
+      cursor: pointer;
+      white-space: nowrap;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+
+    nav button:hover {
+      color: var(--ink);
+    }
+
+    nav button.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* MAIN */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    /* SECTION */
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.9rem;
+      font-weight: 900;
+      margin-bottom: 0.4rem;
+    }
+
+    .section-subtitle {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-bottom: 2rem;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.05em;
+    }
+
+    /* CARD GRID */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .card-grid.wide {
+      grid-template-columns: 1fr;
+    }
+
+    .card-grid.two-col {
+      grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+    }
+
+    /* CARD */
+    .card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+      padding: 0.9rem 1.25rem 0.7rem;
+      border-bottom: 1.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--tag-bg);
+    }
+
+    .card-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .card-icon.gold {
+      background: var(--gold);
+    }
+
+    .card-icon.ink {
+      background: var(--ink);
+    }
+
+    .card-title {
+      font-weight: 600;
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .card-body {
+      padding: 1.1rem 1.25rem 1.25rem;
+    }
+
+    /* DEFINITION BOX */
+    .def {
+      background: var(--light);
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    .def.gold {
+      border-left-color: var(--gold);
+    }
+
+    .def.ink {
+      border-left-color: var(--ink);
+    }
+
+    /* LIST */
+    ul.styled,
+    ol.styled {
+      padding-left: 1.2rem;
+      font-size: 0.88rem;
+      line-height: 1.8;
+    }
+
+    ul.styled li::marker {
+      color: var(--accent);
+    }
+
+    ol.styled li::marker {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* TERM */
+    .term {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .term.gold {
+      color: var(--gold);
+    }
+
+    .term.ink {
+      color: var(--ink);
+    }
+
+    /* TABLE */
+    table.study {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin-top: 0.5rem;
+    }
+
+    table.study th {
+      background: var(--ink);
+      color: #fff;
+      padding: 0.6rem 0.9rem;
+      text-align: left;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+
+    table.study td {
+      padding: 0.6rem 0.9rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    table.study tr:nth-child(even) td {
+      background: var(--light);
+    }
+
+    /* BADGE */
+    .badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.55rem;
+      border-radius: 2px;
+      margin-right: 0.3rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .badge.gold {
+      background: var(--gold);
+    }
+
+    .badge.ink {
+      background: var(--ink);
+    }
+
+    .badge.outline {
+      background: none;
+      color: var(--accent);
+      border: 1.5px solid var(--accent);
+    }
+
+    /* FLOW */
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      align-items: center;
+      margin-top: 0.75rem;
+    }
+
+    .flow-step {
+      background: var(--ink);
+      color: #fff;
+      padding: 0.45rem 0.8rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-align: center;
+    }
+
+    .flow-arrow {
+      color: var(--gold);
+      font-size: 1rem;
+      padding: 0 0.3rem;
+      font-weight: 700;
+    }
+
+    .flow-step:nth-child(odd) {
+      background: var(--accent);
+    }
+
+    .flow-step:nth-child(4n+1) {
+      background: var(--ink);
+    }
+
+    .flow-step:nth-child(4n+3) {
+      background: var(--gold);
+    }
+
+    /* SCALE VISUAL */
+    .scale-bar {
+      height: 12px;
+      background: linear-gradient(to right, var(--accent), var(--gold), #4caf50);
+      border-radius: 6px;
+      margin: 0.75rem 0 0.25rem;
+    }
+
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* HIGHLIGHT BOX */
+    .highlight {
+      background: linear-gradient(135deg, #fff8f0, #fff);
+      border: 1.5px solid var(--gold);
+      border-radius: 4px;
+      padding: 0.9rem 1.1rem;
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+    }
+
+    .highlight h4 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* TWO COL CONTENT */
+    .two-col-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    @media(max-width: 600px) {
+      .two-col-content {
+        grid-template-columns: 1fr;
+      }
+
+      .card-grid.two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .col-box {
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.8rem 1rem;
+      font-size: 0.83rem;
+    }
+
+    .col-box h4 {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .col-box.accent-border {
+      border-top: 3px solid var(--accent);
+    }
+
+    .col-box.gold-border {
+      border-top: 3px solid var(--gold);
+    }
+
+    /* QUOTE */
+    blockquote.study {
+      border-left: 4px solid var(--gold);
+      margin: 0.75rem 0;
+      padding: 0.6rem 1rem;
+      font-style: italic;
+      font-size: 0.88rem;
+      color: var(--muted);
+      background: var(--light);
+    }
+
+    blockquote.study cite {
+      display: block;
+      font-style: normal;
+      font-size: 0.75rem;
+      color: var(--gold);
+      margin-top: 0.3rem;
+      font-weight: 600;
+    }
+
+    /* NUMBER CARD */
+    .num-card {
+      display: flex;
+      gap: 1rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px dashed var(--border);
+      font-size: 0.86rem;
+      line-height: 1.55;
+    }
+
+    .num-card:last-child {
+      border-bottom: none;
+    }
+
+    .num-card .num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--border);
+      line-height: 1;
+      min-width: 28px;
+    }
+
+    .num-card .content strong {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+    }
+
+    /* DIVIDER */
+    hr.styled {
+      border: none;
+      border-top: 2px dashed var(--border);
+      margin: 1.25rem 0;
+    }
+
+    p.small {
+      font-size: 0.82rem;
+      line-height: 1.6;
+      color: var(--ink);
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="label">📚 Kartu Belajar Ujian Tertulis</div>
+    <h1>Metodologi <span>Penelitian</span></h1>
+    <p>Website by Farrel Ananta Putra</p>
+  </header>
+
+  <nav id="nav">
+    <button class="active" onclick="show('p1')">P1: Konsep Dasar</button>
+    <button onclick="show('p2')">P2: Kuantitatif vs Kualitatif</button>
+    <button onclick="show('p3')">P3: Populasi & Sampel</button>
+    <button onclick="show('p4')">P4: Variabel & Paradigma</button>
+    <button onclick="show('p5')">P5: Data & Pengukuran</button>
+    <a href="metopen_quiz.html"
+      style="font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--accent);padding:1rem 1.2rem;text-decoration:none;display:flex;align-items:center;border-bottom:3px solid transparent;">🎯
+      KUIS P1-P5</a>
+  </nav>
+
+  <main>
+
+    <!-- ===== P1: KONSEP DASAR ===== -->
+    <section class="section active" id="p1">
+      <div class="section-title">Konsep Dasar Penelitian</div>
+      <div class="section-subtitle">// Pertemuan 1 — Fondasi Metodologi</div>
+
+      <div class="card-grid">
+
+        <!-- Definisi Penelitian -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">1</div>
+            <div class="card-title">Apa itu Penelitian?</div>
+          </div>
+          <div class="card-body">
+            <blockquote class="study">
+              Proses yang terorganisasi, sistematis, berdasarkan data, kritis, objektif, investigasi terhadap suatu
+              permasalahan untuk menemukan jawaban/solusi yang tepat.
+              <cite>— Jovita Kaur</cite>
+            </blockquote>
+            <p class="small">Dalam arti luas: setiap pengumpulan data, informasi dan fakta untuk kemajuan pengetahuan.
+            </p>
+            <hr class="styled">
+            <p class="small">Contoh bentuk penelitian sederhana:</p>
+            <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.5rem;">
+              <span class="badge">Membaca buku faktual</span>
+              <span class="badge gold">Berselancar internet</span>
+              <span class="badge ink">Menonton/membaca berita</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tujuan Penelitian -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon gold">2</div>
+            <div class="card-title">Tujuan Penelitian (Prof. Sugiyono)</div>
+          </div>
+          <div class="card-body">
+            <div class="num-card">
+              <div class="num">01</div>
+              <div class="content">
+                <strong>Penemuan</strong>
+                Data betul-betul baru yang sebelumnya belum pernah diketahui
+              </div>
+            </div>
+            <div class="num-card">
+              <div class="num">02</div>
+              <div class="content">
+                <strong>Pembuktian</strong>
+                Membuktikan keragu-raguan terhadap informasi atau pengetahuan tertentu
+              </div>
+            </div>
+            <div class="num-card">
+              <div class="num">03</div>
+              <div class="content">
+                <strong>Pengembangan</strong>
+                Memperdalam dan memperluas pengetahuan yang telah ada
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DATA -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon ink">D</div>
+            <div class="card-title">Data</div>
+          </div>
+          <div class="card-body">
+            <p class="small">Data digunakan untuk <strong>memahami, memecahkan dan mengantisipasi masalah</strong>.</p>
+            <hr class="styled">
+            <div class="two-col-content">
+              <div class="col-box accent-border">
+                <h4>Valid</h4>
+                Menunjukkan derajat ketepatan antara data sesungguhnya dengan data yang dikumpulkan peneliti
+              </div>
+              <div class="col-box gold-border">
+                <h4>Reliabilitas & Objektivitas</h4>
+                Data harus konsisten dan tidak bias dari peneliti
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Jenis Metode Penelitian -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">3</div>
+            <div class="card-title">Jenis Metode — Berdasarkan Tujuan</div>
+          </div>
+          <div class="card-body">
+            <div class="num-card">
+              <div class="num">A</div>
+              <div class="content"><strong>Penelitian Dasar</strong>: Penemuan ilmu baru</div>
+            </div>
+            <div class="num-card">
+              <div class="num">B</div>
+              <div class="content"><strong>Penelitian Pengembangan (R&D)</strong>: Penemuan, pengembangan, dan pengujian
+                produk</div>
+            </div>
+            <div class="num-card">
+              <div class="num">C</div>
+              <div class="content"><strong>Penelitian Terapan</strong>: Menerapkan ilmu/produk</div>
+            </div>
+            <hr class="styled">
+            <table class="study">
+              <tr>
+                <th>Jenis</th>
+                <th>Metode yang Cocok</th>
+              </tr>
+              <tr>
+                <td>Basic Research</td>
+                <td>Eksperimen &amp; Kualitatif</td>
+              </tr>
+              <tr>
+                <td>R&D</td>
+                <td>Survey, Kualitatif, Eksperimen</td>
+              </tr>
+              <tr>
+                <td>Applied Research</td>
+                <td>Eksperimen &amp; Survey</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- Jenis Metode Berdasarkan Tempat -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon gold">4</div>
+            <div class="card-title">Jenis Metode — Berdasarkan Tempat</div>
+          </div>
+          <div class="card-body">
+            <table class="study">
+              <tr>
+                <th>Metode</th>
+                <th>Tempat</th>
+                <th>Perlakuan</th>
+                <th>Data</th>
+              </tr>
+              <tr>
+                <td><strong>Eksperimen</strong></td>
+                <td>Laboratorium</td>
+                <td>Ada perlakuan</td>
+                <td>Kuantitatif</td>
+              </tr>
+              <tr>
+                <td><strong>Survey</strong></td>
+                <td>Alamiah (bukan lab)</td>
+                <td>Ada perlakuan</td>
+                <td>Kuantitatif</td>
+              </tr>
+              <tr>
+                <td><strong>Naturalistik</strong></td>
+                <td>Alamiah</td>
+                <td>Tidak ada perlakuan</td>
+                <td>Kualitatif</td>
+              </tr>
+            </table>
+            <div class="highlight">
+              <h4>Contoh Metode Eksperimen</h4>
+              Pengaruh ruang kerja ber-AC terhadap produktivitas kerja
+            </div>
+          </div>
+        </div>
+
+        <!-- Scientific Research Process -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon ink">S</div>
+            <div class="card-title">Proses Scientific Research (8 Langkah)</div>
+          </div>
+          <div class="card-body">
+            <div class="flow">
+              <div class="flow-step">1. Formulasi Topik</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">2. Hipotesis</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">3. Definisi Konseptual</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">4. Definisi Operasional</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">5. Pengumpulan Data</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">6. Analisis Data</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">7. Uji & Revisi Hipotesis</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">8. Kesimpulan</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- The Aims of Research -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">5</div>
+            <div class="card-title">The Aims of Research (4 Tahapan)</div>
+          </div>
+          <div class="card-body">
+            <div class="num-card">
+              <div class="num">01</div>
+              <div class="content">
+                <strong>Observation & Description</strong>
+                Observasi fenomena yang terjadi. Contoh: kenaikan kasus Covid-19 akibat varian Omicron
+              </div>
+            </div>
+            <div class="num-card">
+              <div class="num">02</div>
+              <div class="content">
+                <strong>Predict (Hipotesis)</strong>
+                Membuat dugaan awal yang akan diuji — hipotesis bisa benar atau salah
+              </div>
+            </div>
+            <div class="num-card">
+              <div class="num">03</div>
+              <div class="content">
+                <strong>Determination of the Causes</strong>
+                Memperoleh data numerik, menggunakan uji statistik. Contoh: studi pemanasan global &amp; korelasinya
+                terhadap bencana di Indonesia
+              </div>
+            </div>
+            <div class="num-card">
+              <div class="num">04</div>
+              <div class="content">
+                <strong>Explain</strong>
+                Menjawab "Mengapa?" dan "Bagaimana?" — perlu meninjau penelitian sebelumnya
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hipotesis -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon gold">H</div>
+            <div class="card-title">Hipotesis — Pengertian & Kriteria</div>
+          </div>
+          <div class="card-body">
+            <div class="def">
+              Prediksi yang dapat diuji dengan mengamati hasil eksperimen. Jika hasil tidak sesuai →
+              <strong>ditolak</strong>. Jika konsisten → <strong>mendukung hipotesis</strong>.
+            </div>
+            <p class="small" style="margin-bottom:0.6rem;font-weight:600;">Hipotesis yang BAGUS harus:</p>
+            <ul class="styled">
+              <li>Konsisten terhadap fakta dan teori yang diketahui</li>
+              <li>Mampu menjelaskan data dalam istilah sederhana</li>
+              <li>Dinyatakan dalam istilah paling sederhana</li>
+              <li>Dapat diuji (falsifiable) → mampu benar atau salah → kesimpulan empiris/operasional</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Formulasi Hipotesis -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon ink">F</div>
+            <div class="card-title">Cara Formulasi Hipotesis (4 Cara)</div>
+          </div>
+          <div class="card-body">
+            <div class="num-card">
+              <div class="num">i</div>
+              <div class="content"><strong>Induktif</strong>: Membuat pengamatan perilaku, memperhatikan tren atau
+                kemungkinan hubungan</div>
+            </div>
+            <div class="num-card">
+              <div class="num">ii</div>
+              <div class="content"><strong>Membatasi Masalah</strong>: Memahami bukti yang tersedia untuk
+                mendukung/menentang hubungan yang diharapkan</div>
+            </div>
+            <div class="num-card">
+              <div class="num">iii</div>
+              <div class="content"><strong>Deduktif</strong>: Diturunkan dari teori tertentu</div>
+            </div>
+            <div class="num-card">
+              <div class="num">iv</div>
+              <div class="content"><strong>Analogi/Konsultasi</strong>: Dari percakapan inter-disiplin dan konsultasi
+                dengan para ahli</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Identifikasi Masalah -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">I</div>
+            <div class="card-title">Identifikasi Masalah</div>
+          </div>
+          <div class="card-body">
+            <div class="def">
+              Masalah penelitian adalah situasi yang menyebabkan peneliti merasa khawatir dan tidak nyaman. Melibatkan
+              pertanyaan: <strong>Siapa? Apa? Dimana? Kapan? Mengapa?</strong>
+            </div>
+            <p class="small" style="margin-bottom:0.5rem;font-weight:600;">Sumber Masalah:</p>
+            <ul class="styled">
+              <li><strong>Pengalaman pribadi/orang lain</strong> — misal: masalah dalam dunia industri</li>
+              <li><strong>Literatur Ilmiah</strong> — membaca temuan, perhatikan bidang yang tidak cukup</li>
+              <li><strong>Teori</strong> — kekurangan dalam teori yang ada</li>
+            </ul>
+            <hr class="styled">
+            <p class="small" style="font-weight:600;">Hal yang perlu diidentifikasi:</p>
+            <ul class="styled">
+              <li>Garis besar konteks umum masalah</li>
+              <li>Teori, konsep, dan gagasan utama</li>
+              <li>Asumsi yang mendasari</li>
+              <li>Mengapa isu-isu tersebut penting?</li>
+              <li>Apa yang perlu dipecahkan?</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Survey Literatur -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon gold">L</div>
+            <div class="card-title">Survey dari Literatur</div>
+          </div>
+          <div class="card-body">
+            <p class="small" style="margin-bottom:0.5rem;font-weight:600;">Fungsi Survey Literatur:</p>
+            <ul class="styled">
+              <li>Mengembangkan kemampuan mengenali yang signifikan dan relevan</li>
+              <li>Mengukur kualitas bahan penelitian dan perencanaan yang sesuai</li>
+              <li>Mengembangkan sikap kritis terhadap penelitian orang lain</li>
+              <li>Memahami masalah dalam proses penelitian agar tidak terulang</li>
+              <li>Menentukan batas-batas bidang penelitian</li>
+            </ul>
+            <hr class="styled">
+            <p class="small" style="font-weight:600;">Macam-Macam Literatur:</p>
+            <ul class="styled">
+              <li><strong>Komprehensif</strong>: Buku & artikel ahli — pendapat, teori, gagasan utama</li>
+              <li><strong>Penelitian</strong>: Laporan hasil penelitian di lapangan, hasil studi yang sudah dibuktikan
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== P2: KUANTITATIF VS KUALITATIF ===== -->
+    <section class="section" id="p2">
+      <div class="section-title">Penelitian Kuantitatif vs Kualitatif</div>
+      <div class="section-subtitle">// Pertemuan 2 — Proses, Masalah, Rumusan, Variabel</div>
+
+      <div class="card-grid">
+
+        <!-- Perbandingan aksioma -->
+        <div class="card" style="grid-column: 1 / -1;">
+          <div class="card-header">
+            <div class="card-icon">⚖</div>
+            <div class="card-title">Perbedaan Aksioma: Kuantitatif vs Kualitatif</div>
+          </div>
+          <div class="card-body">
+            <table class="study">
+              <tr>
+                <th>Aksioma Dasar</th>
+                <th>Metode Kuantitatif</th>
+                <th>Metode Kualitatif</th>
+              </tr>
+              <tr>
+                <td><strong>Sifat Realitas</strong></td>
+                <td>Dapat diklarifikasi, konkrit, teramati, terukur</td>
+                <td>Ganda, holistik, dinamis, hasil konstruksi &amp; pemahaman</td>
+              </tr>
+              <tr>
+                <td><strong>Hubungan Peneliti &amp; Objek</strong></td>
+                <td>Independen — supaya terbangun objektivitas</td>
+                <td>Interaktif dengan sumber data supaya memperoleh makna</td>
+              </tr>
+              <tr>
+                <td><strong>Hubungan Variabel</strong></td>
+                <td>Sebab-akibat (kausal): X → Y</td>
+                <td>Timbal balik/interaktif: X ↔ Y</td>
+              </tr>
+              <tr>
+                <td><strong>Generalisasi</strong></td>
+                <td>Cenderung membuat generalisasi</td>
+                <td>Transferability — hanya dalam ikatan konteks &amp; waktu</td>
+              </tr>
+              <tr>
+                <td><strong>Peranan Nilai</strong></td>
+                <td>Cenderung bebas nilai</td>
+                <td>Terikat nilai yang dibawa peneliti dan sumber data</td>
+              </tr>
+            </table>
+            <div class="two-col-content" style="margin-top:1rem;">
+              <div class="col-box accent-border">
+                <h4>Metode Kuantitatif</h4>
+                Metode tradisional, positivistik, discovery
+              </div>
+              <div class="col-box gold-border">
+                <h4>Metode Kualitatif</h4>
+                Metode baru, postpositivistik, artistik
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Proses Penelitian Kuantitatif -->
+        <div class="card" style="grid-column: 1 / -1;">
+          <div class="card-header">
+            <div class="card-icon">🔄</div>
+            <div class="card-title">Alur Proses Penelitian Kuantitatif</div>
+          </div>
+          <div class="card-body">
+            <div class="flow">
+              <div class="flow-step">Rumusan Masalah</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">Landasan Teori</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">Perumusan Hipotesis</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">Populasi &amp; Sampel</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">Pengembangan Instrumen</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">Pengujian Instrumen</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">Pengumpulan Data</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">Analisis Data</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">Kesimpulan &amp; Saran</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Masalah -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon gold">M</div>
+            <div class="card-title">Pengertian Masalah</div>
+          </div>
+          <div class="card-body">
+            <div class="def">
+              <strong>Prof. Sugiyono:</strong> Penyimpangan antara yang seharusnya dengan apa yang benar-benar terjadi;
+              antara teori dan praktik; antara aturan dan pelaksanaan; antara rencana dan pelaksanaan.
+            </div>
+            <div class="def gold">
+              <strong>Stonner (1982):</strong> Masalah dapat diketahui apabila terdapat penyimpangan antara pengalaman
+              dan kenyataan, antara yang direncanakan dengan kenyataan, adanya pengaduan, dan kompetisi.
+            </div>
+          </div>
+        </div>
+
+        <!-- Rumusan Masalah -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon ink">R</div>
+            <div class="card-title">Bentuk-Bentuk Rumusan Masalah</div>
+          </div>
+          <div class="card-body">
+            <p class="small" style="margin-bottom:0.75rem;">Rumusan masalah = pertanyaan yang dicari jawabannya melalui
+              pengumpulan data</p>
+            <div class="num-card">
+              <div class="num">1</div>
+              <div class="content">
+                <strong>Deskriptif</strong>
+                Contoh: Seberapa tinggi tingkat kepuasan masyarakat terhadap pelayanan pemerintah di bidang kesehatan?
+              </div>
+            </div>
+            <div class="num-card">
+              <div class="num">2</div>
+              <div class="content">
+                <strong>Komparatif</strong>
+                Contoh: Adakah perbedaan kualitas manajemen di perusahaan A dan B?
+              </div>
+            </div>
+            <div class="num-card">
+              <div class="num">3</div>
+              <div class="content">
+                <strong>Asosiatif</strong>
+                Contoh: Hubungan antara motivasi dan prestasi (motivasi ↔ prestasi)
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Variabel -->
+        <div class="card" style="grid-column: 1 / -1;">
+          <div class="card-header">
+            <div class="card-icon">V</div>
+            <div class="card-title">Macam-Macam Variabel Penelitian</div>
+          </div>
+          <div class="card-body">
+            <div class="def">
+              <strong>Variabel penelitian</strong> adalah segala sesuatu yang berbentuk apa saja yang ditetapkan oleh
+              peneliti untuk dipelajari sehingga diperoleh informasi, kemudian ditarik kesimpulannya.
+            </div>
+            <table class="study">
+              <tr>
+                <th>Variabel</th>
+                <th>Nama Lain</th>
+                <th>Penjelasan</th>
+                <th>Contoh</th>
+              </tr>
+              <tr>
+                <td><strong>Independen</strong></td>
+                <td>Bebas / Stimulus / Predictor / Antecedent</td>
+                <td>Mempengaruhi atau menjadi sebab perubahan variabel dependen</td>
+                <td>Komitmen Kerja</td>
+              </tr>
+              <tr>
+                <td><strong>Dependen</strong></td>
+                <td>Terikat / Output / Kriteria / Konsekuen</td>
+                <td>Dipengaruhi atau menjadi akibat karena adanya variabel bebas</td>
+                <td>Produktivitas Kerja</td>
+              </tr>
+              <tr>
+                <td><strong>Moderator</strong></td>
+                <td>—</td>
+                <td>Mempengaruhi (memperkuat/memperlemah) hubungan antara IV dan DV</td>
+                <td>Peranan pemimpin dalam iklim kerja memoderasi hubungan motivasi-produktivitas</td>
+              </tr>
+              <tr>
+                <td><strong>Intervening</strong></td>
+                <td>—</td>
+                <td>Secara teoritis mempengaruhi hubungan IV-DV secara tidak langsung; tidak dapat diamati/diukur</td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td><strong>Kontrol</strong></td>
+                <td>—</td>
+                <td>Dikendalikan/dibuat konstan agar IV tidak dipengaruhi faktor luar. Sering digunakan dalam penelitian
+                  komparatif</td>
+                <td>—</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- Paradigma Penelitian -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon gold">P</div>
+            <div class="card-title">Paradigma Penelitian</div>
+          </div>
+          <div class="card-body">
+            <div class="def gold">
+              Pola pikir yang menunjukkan hubungan antar variabel yang diteliti; mencerminkan jenis & jumlah rumusan
+              masalah, teori untuk hipotesis, jenis hipotesis, dan teknik analisis statistik.
+            </div>
+            <p class="small">Paradigma penelitian tercermin dalam:</p>
+            <ul class="styled" style="margin-top:0.4rem;">
+              <li>Judul Penelitian</li>
+              <li>Paradigma Penelitian (diagram/pola)</li>
+              <li>Rumusan Masalah</li>
+              <li>Rumusan Hipotesis Penelitian</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== P3: POPULASI & SAMPEL ===== -->
+    <section class="section" id="p3">
+      <div class="section-title">Populasi, Sampel & Hipotesis</div>
+      <div class="section-subtitle">// Pertemuan 3 — Teknik Sampling & Penyusunan Hipotesis</div>
+
+      <div class="card-grid">
+
+        <!-- Populasi & Sampel -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">👥</div>
+            <div class="card-title">Populasi</div>
+          </div>
+          <div class="card-body">
+            <div class="def">
+              Wilayah generalisasi yang terdiri atas objek/subjek yang mempunyai kualitas dan karakteristik tertentu
+              yang <strong>ditetapkan oleh peneliti</strong> untuk dipelajari dan kemudian ditarik kesimpulannya.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon gold">🔬</div>
+            <div class="card-title">Sampel</div>
+          </div>
+          <div class="card-body">
+            <div class="def gold">
+              Bagian dari jumlah dan karakteristik yang dimiliki oleh populasi. Digunakan ketika peneliti tidak mungkin
+              mempelajari seluruh populasi (keterbatasan dana, tenaga, waktu).
+            </div>
+            <div class="highlight">
+              <h4>Syarat Penting</h4>
+              Sampel harus <strong>representative (mewakili)</strong> dari populasi
+            </div>
+          </div>
+        </div>
+
+        <!-- Ukuran Sampel Roscoe -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon ink">R</div>
+            <div class="card-title">Ukuran Sampel (Roscoe, 1982)</div>
+          </div>
+          <div class="card-body">
+            <div class="num-card">
+              <div class="num">1</div>
+              <div class="content">Ukuran sampel yang layak: <strong>30 s/d 500</strong></div>
+            </div>
+            <div class="num-card">
+              <div class="num">2</div>
+              <div class="content">Bila sampel dibagi dalam kategori (pria-wanita, dll): <strong>minimal 30 per
+                  kategori</strong></div>
+            </div>
+            <div class="num-card">
+              <div class="num">3</div>
+              <div class="content">Analisis multivariate (korelasi/regresi ganda): <strong>minimal 10× jumlah
+                  variabel</strong></div>
+            </div>
+            <div class="num-card">
+              <div class="num">4</div>
+              <div class="content">Penelitian eksperimen sederhana (kelompok eksperimen + kontrol):
+                <strong>masing-masing 10–20 orang</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Probability Sampling -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🎲</div>
+            <div class="card-title">Probability Sampling</div>
+          </div>
+          <div class="card-body">
+            <div class="def">
+              Teknik yang memberikan <strong>peluang yang sama</strong> bagi setiap anggota populasi untuk dipilih
+              menjadi sampel.
+            </div>
+            <div class="num-card">
+              <div class="num">1</div>
+              <div class="content">
+                <strong>Simple Random Sampling</strong>: Pengambilan acak tanpa memperhatikan strata. Digunakan bila
+                populasi <strong>homogen</strong>.
+              </div>
+            </div>
+            <div class="num-card">
+              <div class="num">2</div>
+              <div class="content">
+                <strong>Proportionate Stratified Random Sampling</strong>: Populasi tidak homogen dan berstrata
+                <strong>secara proporsional</strong>.
+              </div>
+            </div>
+            <div class="num-card">
+              <div class="num">3</div>
+              <div class="content">
+                <strong>Disproportionate Stratified Random Sampling</strong>: Populasi berstrata tetapi <strong>kurang
+                  proporsional</strong>.
+              </div>
+            </div>
+            <div class="num-card">
+              <div class="num">4</div>
+              <div class="content">
+                <strong>Area (Cluster) Sampling</strong>: Objek yang diteliti <strong>sangat luas</strong> (penduduk
+                negara/provinsi/kabupaten). Pengambilan berdasarkan daerah populasi.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Non Probability Sampling -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon gold">🚫🎲</div>
+            <div class="card-title">Non Probability Sampling</div>
+          </div>
+          <div class="card-body">
+            <div class="def gold">
+              Teknik yang <strong>tidak memberi peluang/kesempatan sama</strong> bagi setiap anggota populasi untuk
+              dipilih.
+            </div>
+            <div class="num-card">
+              <div class="num">1</div>
+              <div class="content"><strong>Sampling Sistematis</strong>: Berdasarkan urutan nomor anggota populasi</div>
+            </div>
+            <div class="num-card">
+              <div class="num">2</div>
+              <div class="content"><strong>Sampling Kuota</strong>: Menentukan sampel dengan ciri-ciri tertentu sampai
+                jumlah (kuota) yang diinginkan</div>
+            </div>
+            <div class="num-card">
+              <div class="num">3</div>
+              <div class="content"><strong>Sampling Insidental</strong>: Berdasarkan kebetulan — siapa saja yang bertemu
+                peneliti dapat dijadikan sampel bila cocok</div>
+            </div>
+            <div class="num-card">
+              <div class="num">4</div>
+              <div class="content"><strong>Sampling Purposive</strong>: Penentuan sampel dengan <strong>pertimbangan
+                  tertentu</strong></div>
+            </div>
+            <div class="num-card">
+              <div class="num">5</div>
+              <div class="content"><strong>Sampling Jenuh (Sensus)</strong>: Semua anggota populasi digunakan sebagai
+                sampel</div>
+            </div>
+            <div class="num-card">
+              <div class="num">6</div>
+              <div class="content"><strong>Snowball Sampling</strong>: Jumlah sampel mula-mula kecil, kemudian
+                <strong>membesar</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hipotesis -->
+        <div class="card" style="grid-column: 1 / -1;">
+          <div class="card-header">
+            <div class="card-icon ink">H</div>
+            <div class="card-title">Hipotesis — Definisi, Bentuk, Karakteristik</div>
+          </div>
+          <div class="card-body">
+            <div class="def ink">
+              Jawaban <strong>sementara</strong> terhadap rumusan masalah penelitian yang dinyatakan dalam bentuk
+              kalimat pertanyaan. Dikatakan sementara karena berdasarkan teori yang relevan, belum berdasarkan fakta
+              empiris. Hipotesis statistik digunakan jika penelitian bekerja dengan sampel.
+            </div>
+            <table class="study" style="margin-top:0.75rem;">
+              <tr>
+                <th>Bentuk Hipotesis</th>
+                <th>Pengertian</th>
+                <th>Contoh Rumusan Masalah</th>
+                <th>Hipotesis Statistik</th>
+              </tr>
+              <tr>
+                <td><strong>Deskriptif</strong></td>
+                <td>Jawaban sementara terhadap masalah deskriptif; berkenaan dengan variabel mandiri</td>
+                <td>Seberapa tinggi daya beli masyarakat?</td>
+                <td>H₀: μ = nilai tertentu</td>
+              </tr>
+              <tr>
+                <td><strong>Komparatif</strong></td>
+                <td>Variabel sama, populasi/sampel/waktu berbeda</td>
+                <td>Adakah perbedaan penghasilan petani dan nelayan?</td>
+                <td>H₀: μ₁ = μ₂ / H₁: μ₁ ≠ μ₂</td>
+              </tr>
+              <tr>
+                <td><strong>Asosiatif</strong></td>
+                <td>Menanyakan hubungan antara dua variabel atau lebih</td>
+                <td>Adakah hubungan signifikan antara tinggi badan pelayan toko dengan barang yang terjual?</td>
+                <td>H₀: ρ = 0 (tidak ada hubungan) / H₁: ρ ≠ 0 (ada hubungan)</td>
+              </tr>
+            </table>
+            <div class="highlight" style="margin-top:1rem;">
+              <h4>Karakteristik Hipotesis yang Baik</h4>
+              <ul class="styled">
+                <li>Merupakan dugaan terhadap keadaan variabel mandiri, perbandingan, atau hubungan antar variabel</li>
+                <li>Dinyatakan dalam kalimat yang <strong>jelas</strong> — tidak menimbulkan berbagai penafsiran</li>
+                <li>Dapat <strong>diuji</strong> dengan data yang dikumpulkan dengan metode ilmiah</li>
+              </ul>
+            </div>
+            <hr class="styled">
+            <p class="small"><strong>Contoh Lengkap Hipotesis Asosiatif:</strong></p>
+            <ul class="styled" style="margin-top:0.4rem;">
+              <li>Rumusan Masalah: Adakah hubungan signifikan antara curah hujan dengan jumlah payung yang terjual?</li>
+              <li>Hipotesis Penelitian: Terdapat hubungan yang positif dan signifikan antara curah hujan dengan jumlah
+                payung yang terjual (bila curah hujan tinggi → semakin banyak payung terjual)</li>
+              <li>H₀: ρ = 0 (tidak ada hubungan) / H₁: ρ ≠ 0</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== P4: VARIABEL & PARADIGMA (dari P2) ===== -->
+    <section class="section" id="p4">
+      <div class="section-title">Paradigma & Hipotesis Lanjutan</div>
+      <div class="section-subtitle">// Rangkuman Praktis P2 + P3 — Hubungan Paradigma, Rumusan, dan Hipotesis</div>
+
+      <div class="card-grid">
+
+        <div class="card" style="grid-column: 1 / -1;">
+          <div class="card-header">
+            <div class="card-icon">🔗</div>
+            <div class="card-title">Keterkaitan: Paradigma → Rumusan Masalah → Hipotesis</div>
+          </div>
+          <div class="card-body">
+            <table class="study">
+              <tr>
+                <th>Rumusan Masalah</th>
+                <th>Bentuk Hipotesis</th>
+                <th>Metode Analisis</th>
+                <th>Catatan</th>
+              </tr>
+              <tr>
+                <td>Deskriptif</td>
+                <td>Hipotesis Deskriptif</td>
+                <td>Statistik deskriptif (mean, %, dll)</td>
+                <td>Umumnya tidak dirumuskan hipotesisnya</td>
+              </tr>
+              <tr>
+                <td>Komparatif</td>
+                <td>Hipotesis Komparatif</td>
+                <td>Uji beda (t-test, ANOVA, dll)</td>
+                <td>Variabel sama, sampel berbeda</td>
+              </tr>
+              <tr>
+                <td>Asosiatif</td>
+                <td>Hipotesis Asosiatif</td>
+                <td>Korelasi, regresi</td>
+                <td>Hubungan 2+ variabel: ρ=0 vs ρ≠0</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon gold">📊</div>
+            <div class="card-title">Hipotesis Penelitian vs Hipotesis Statistik</div>
+          </div>
+          <div class="card-body">
+            <div class="two-col-content">
+              <div class="col-box accent-border">
+                <h4>Hipotesis Penelitian</h4>
+                <ul class="styled">
+                  <li>Ada perbedaan signifikan penghasilan rata-rata masyarakat dalam sampel dengan populasi</li>
+                  <li>Terdapat perbedaan signifikan antara penghasilan petani dan nelayan</li>
+                  <li>Ada hubungan positif dan signifikan antara curah hujan dengan jumlah payung terjual</li>
+                </ul>
+              </div>
+              <div class="col-box gold-border">
+                <h4>Hipotesis Statistik</h4>
+                <ul class="styled">
+                  <li>Kemampuan daya beli masyarakat (populasi) rendah</li>
+                  <li>Tidak terdapat perbedaan daya beli antara petani dan nelayan (populasi)</li>
+                  <li>Ada hubungan positif antara penghasilan dengan daya beli (populasi)</li>
+                </ul>
+              </div>
+            </div>
+            <div class="highlight" style="margin-top:1rem;">
+              <h4>Kapan Hipotesis Statistik Digunakan?</h4>
+              Hanya ketika penelitian bekerja dengan <strong>sampel</strong> — untuk menggeneralisasi ke populasi
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon ink">💡</div>
+            <div class="card-title">Ringkasan Variabel (Mudah Diingat)</div>
+          </div>
+          <div class="card-body">
+            <div class="num-card">
+              <div class="num">IV</div>
+              <div class="content"><span class="term">Independen (Bebas)</span> → Sebab / yang mempengaruhi → X</div>
+            </div>
+            <div class="num-card">
+              <div class="num">DV</div>
+              <div class="content"><span class="term">Dependen (Terikat)</span> → Akibat / yang dipengaruhi → Y</div>
+            </div>
+            <div class="num-card">
+              <div class="num">MV</div>
+              <div class="content"><span class="term gold">Moderator</span> → Perkuat/perlemah hubungan IV-DV (bisa
+                diukur)</div>
+            </div>
+            <div class="num-card">
+              <div class="num">ITV</div>
+              <div class="content"><span class="term ink">Intervening</span> → Penghubung IV-DV secara tidak langsung
+                (tidak bisa diukur langsung)</div>
+            </div>
+            <div class="num-card">
+              <div class="num">CV</div>
+              <div class="content"><span class="term">Kontrol</span> → Dikendalikan/dibuat konstan → untuk penelitian
+                komparatif</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== P5: DATA & PENGUKURAN ===== -->
+    <section class="section" id="p5">
+      <div class="section-title">Data, Kuesioner & Skala Pengukuran</div>
+      <div class="section-subtitle">// Pertemuan 5 — Historical & Experimental Research Methods</div>
+
+      <div class="card-grid">
+
+        <!-- Sifat Data -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">📋</div>
+            <div class="card-title">Sifat & Jenis Data</div>
+          </div>
+          <div class="card-body">
+            <div class="def">
+              <strong>Data</strong> mengacu pada informasi/fakta yang dikumpulkan sebagai hasil pengalaman, pengamatan,
+              atau percobaan. Dapat berupa angka, kata, atau gambar.
+            </div>
+            <p class="small" style="font-weight:600;margin-bottom:0.5rem;">Sifat Data:</p>
+            <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.75rem;">
+              <span class="badge">Kualitatif</span>
+              <span class="badge">Kuantitatif</span>
+              <span class="badge gold">Berkelanjutan</span>
+              <span class="badge gold">Diskrit</span>
+              <span class="badge ink">Primer</span>
+              <span class="badge ink">Sekunder</span>
+            </div>
+            <p class="small" style="font-weight:600;margin-bottom:0.4rem;">Metode Pengumpulan Data Primer:</p>
+            <ul class="styled">
+              <li>Kuesioner</li>
+              <li>Wawancara</li>
+              <li>Wawancara kelompok fokus</li>
+              <li>Observasi</li>
+              <li>Studi kasus</li>
+              <li>Buku harian, critical incidents, portofolio</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Kuesioner -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon gold">📝</div>
+            <div class="card-title">Kuesioner — Keuntungan & Kekurangan</div>
+          </div>
+          <div class="card-body">
+            <div class="two-col-content">
+              <div class="col-box accent-border">
+                <h4>✅ Keuntungan</h4>
+                <ul class="styled">
+                  <li>Dapat berdiri sendiri atau dasar wawancara</li>
+                  <li>Dapat dipos/diemail/difaks</li>
+                  <li>Cakupan geografis luas</li>
+                  <li>Relatif murah</li>
+                  <li>Tidak perlu pengaturan sebelumnya</li>
+                  <li>Menghindari rasa malu responden</li>
+                  <li>Responden dapat mempertimbangkan jawaban</li>
+                  <li>Kemungkinan anonimitas</li>
+                  <li>Tidak ada bias pewawancara</li>
+                </ul>
+              </div>
+              <div class="col-box gold-border">
+                <h4>❌ Kekurangan</h4>
+                <ul class="styled">
+                  <li>Masalah desain</li>
+                  <li>Pertanyaan harus sederhana</li>
+                  <li>Tingkat respons rendah secara historis</li>
+                  <li>Ada waktu tunda</li>
+                  <li>Perlu tenggat waktu & pengingat</li>
+                  <li>Diasumsikan tidak ada masalah literasi</li>
+                  <li>Tidak bisa memberi bantuan</li>
+                  <li>Masalah kuesioner tidak lengkap</li>
+                  <li>Balasan tidak spontan</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Response Process & Cost -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon ink">⚙</div>
+            <div class="card-title">Response Process & Biaya Kuesioner</div>
+          </div>
+          <div class="card-body">
+            <p class="small" style="font-weight:600;margin-bottom:0.4rem;">The Response Process (4 langkah — peluang
+              error):</p>
+            <div class="num-card">
+              <div class="num">1</div>
+              <div class="content">Pertanyaan harus <strong>dibaca</strong></div>
+            </div>
+            <div class="num-card">
+              <div class="num">2</div>
+              <div class="content">Pertanyaan harus <strong>dipahami</strong></div>
+            </div>
+            <div class="num-card">
+              <div class="num">3</div>
+              <div class="content">Responden harus <strong>membuat respons</strong></div>
+            </div>
+            <div class="num-card">
+              <div class="num">4</div>
+              <div class="content">Tanggapan harus <strong>diterjemahkan</strong> ke dalam kategori/nilai yang ada</div>
+            </div>
+            <hr class="styled">
+            <p class="small" style="font-weight:600;margin-bottom:0.4rem;">Pertimbangan Biaya (Cost):</p>
+            <ul class="styled">
+              <li>Berapa uang yang dibutuhkan untuk mengumpulkan data?</li>
+              <li>Berapa lama waktu yang dibutuhkan?</li>
+              <li>Apakah pembagian biaya mungkin? (sponsorship/endorsement?)</li>
+              <li>Berapa banyak kuesioner yang diisi & berapa tingkat responsnya?</li>
+            </ul>
+            <hr class="styled">
+            <p class="small" style="font-weight:600;margin-bottom:0.4rem;">Proses Pembuatan Kuesioner:</p>
+            <div class="flow">
+              <div class="flow-step">Identifikasi Informasi</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">Putuskan Jenis</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">Buat Draf</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">Edit & Revisi</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">Pra-Pengujian</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">Prosedur Penggunaan</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skala Pengukuran -->
+        <div class="card" style="grid-column: 1 / -1;">
+          <div class="card-header">
+            <div class="card-icon">📏</div>
+            <div class="card-title">4 Skala Pengukuran</div>
+          </div>
+          <div class="card-body">
+            <div class="def">
+              <strong>Skala pengukuran</strong> adalah kesepakatan yang digunakan sebagai acuan untuk menentukan panjang
+              pendeknya interval dalam alat ukur, sehingga menghasilkan data kuantitatif.
+            </div>
+            <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1rem;">
+              <span class="badge">1. Skala Likert</span>
+              <span class="badge gold">2. Skala Guttman</span>
+              <span class="badge ink">3. Rating Scale</span>
+              <span class="badge outline">4. Semantic Differential</span>
+            </div>
+            <table class="study">
+              <tr>
+                <th>Skala</th>
+                <th>Karakteristik</th>
+                <th>Bentuk Jawaban</th>
+                <th>Skor</th>
+              </tr>
+              <tr>
+                <td><strong>Likert</strong></td>
+                <td>Mengukur sikap, pendapat, persepsi seseorang/kelompok tentang fenomena sosial</td>
+                <td>Sangat Setuju / Setuju / Ragu-ragu / Tidak Setuju / Sangat Tidak Setuju</td>
+                <td>5 / 4 / 3 / 2 / 1</td>
+              </tr>
+              <tr>
+                <td><strong>Guttman</strong></td>
+                <td>Jawaban bersifat tegas dan jelas (dikotomis)</td>
+                <td>Ya–Tidak / Benar–Salah / Pernah–Tidak Pernah / Positif–Negatif</td>
+                <td>Tertinggi: 1 / Terendah: 0</td>
+              </tr>
+              <tr>
+                <td><strong>Rating Scale</strong></td>
+                <td>Lebih fleksibel; mengukur sikap, status sosial ekonomi, pengetahuan, kemampuan, proses kegiatan,
+                  dll. Data mentah berupa angka → ditafsirkan kualitatif</td>
+                <td>Angka 1–4 (misal: 4=sangat baik, 3=cukup baik, 2=kurang baik, 1=sangat tidak baik)</td>
+                <td>Numerik → kualitatif</td>
+              </tr>
+              <tr>
+                <td><strong>Semantic Differential</strong></td>
+                <td>Dikembangkan oleh Osgood. Berbentuk satu garis kontinum dengan dua kutub berlawanan</td>
+                <td>Bersahabat ←5 4 3 2 1→ Tidak Bersahabat</td>
+                <td>5 (sangat positif) sampai 1 (sangat negatif) atau sebaliknya</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- Contoh Perhitungan Likert -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon gold">🧮</div>
+            <div class="card-title">Contoh Perhitungan Skala Likert</div>
+          </div>
+          <div class="card-body">
+            <p class="small" style="margin-bottom:0.5rem;">100 orang karyawan menilai prosedur kerja baru:</p>
+            <table class="study">
+              <tr>
+                <th>Jawaban</th>
+                <th>Jumlah</th>
+                <th>× Skor</th>
+                <th>Total</th>
+              </tr>
+              <tr>
+                <td>SS (5)</td>
+                <td>25</td>
+                <td>×5</td>
+                <td>125</td>
+              </tr>
+              <tr>
+                <td>ST (4)</td>
+                <td>40</td>
+                <td>×4</td>
+                <td>160</td>
+              </tr>
+              <tr>
+                <td>RG (3)</td>
+                <td>5</td>
+                <td>×3</td>
+                <td>15</td>
+              </tr>
+              <tr>
+                <td>TS (2)</td>
+                <td>20</td>
+                <td>×2</td>
+                <td>40</td>
+              </tr>
+              <tr>
+                <td>STS (1)</td>
+                <td>10</td>
+                <td>×1</td>
+                <td>10</td>
+              </tr>
+              <tr>
+                <td colspan="3"><strong>Jumlah Total</strong></td>
+                <td><strong>350</strong></td>
+              </tr>
+            </table>
+            <div class="scale-bar" style="margin-top:1rem;"></div>
+            <div class="scale-labels">
+              <span>STS (100)</span>
+              <span>TS (200)</span>
+              <span>RG (300)</span>
+              <span style="color:var(--accent);font-weight:700;">↑350</span>
+              <span>ST (400)</span>
+              <span>SS (500)</span>
+            </div>
+            <div class="highlight" style="margin-top:0.75rem;">
+              <h4>Kesimpulan</h4>
+              Skor ideal = 5 × 100 = <strong>500</strong><br>
+              Skor diperoleh = <strong>350</strong><br>
+              Tingkat persetujuan = 350/500 × 100% = <strong>70%</strong><br>
+              → Mayoritas (65%) menjawab setuju/sangat setuju → <strong>Karyawan setuju dengan metode kerja
+                baru</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contoh Perhitungan Rating Scale -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon ink">📐</div>
+            <div class="card-title">Contoh Perhitungan Rating Scale</div>
+          </div>
+          <div class="card-body">
+            <p class="small" style="margin-bottom:0.5rem;">30 responden menilai tata ruang kantor (10 item, skala 1-4):
+            </p>
+            <div class="highlight">
+              <h4>Rumus</h4>
+              Skor Kriterium = skala maks × jumlah item × jumlah responden<br>
+              = <strong>4 × 10 × 30 = 1200</strong><br><br>
+              Skor diperoleh = <strong>818</strong><br>
+              Persentase = 818 / 1200 = <strong>68,2%</strong>
+            </div>
+            <div class="scale-bar" style="margin-top:0.75rem;"></div>
+            <div class="scale-labels">
+              <span>Sangat Tidak Baik (300)</span>
+              <span>↑818</span>
+              <span>Sangat Baik (1200)</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    function show(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      const idx = ['p1', 'p2', 'p3', 'p4', 'p5'].indexOf(id);
+      document.querySelectorAll('nav button')[idx].classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+
+</body>
+
+</html>
