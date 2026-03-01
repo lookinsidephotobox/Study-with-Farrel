@@ -1,4 +1,4 @@
-const CACHE_NAME = 'metopen-v10';
+const CACHE_NAME = 'metopen-v11';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
