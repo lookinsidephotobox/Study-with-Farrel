@@ -80,7 +80,7 @@
         }
 
         main {
-            max-width: 800px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 3rem 1.5rem;
             flex-grow: 1;
@@ -105,6 +105,19 @@
             flex-direction: column;
             align-items: center;
             gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            main {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                align-items: stretch;
+            }
+
+            .menu-card {
+                max-width: none;
+                height: 100%;
+            }
         }
 
         .menu-card:hover {
@@ -136,7 +149,7 @@
     <header>
         <div class="label">📚 Platform Pembelajaran Ujian Tertulis</div>
         <h1>Metodologi <span>Penelitian</span></h1>
-        <p>Dr. Utriweni Mukhaiyar &amp; Amalia Listiani, S.Pd., M.Sc.</p>
+        <p>Website by Farrel Ananta Putra</p>
     </header>
 
     <main>

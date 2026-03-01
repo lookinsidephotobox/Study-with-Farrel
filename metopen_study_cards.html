@@ -279,11 +279,21 @@
     }
 
     /* TABLE */
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 0.5rem;
+      border-radius: 4px;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid var(--border);
+    }
+
     table.study {
       width: 100%;
       border-collapse: collapse;
       font-size: 0.82rem;
-      margin-top: 0.5rem;
+      min-width: 500px;
+      /* Forces tables to stretch and trigger overflow on small screens */
     }
 
     table.study th {
@@ -640,7 +650,7 @@
               <div class="content"><strong>Penelitian Terapan</strong>: Menerapkan ilmu/produk</div>
             </div>
             <hr class="styled">
-            <table class="study">
+            <div class="table-responsive"><table class="study">
               <tr>
                 <th>Jenis</th>
                 <th>Metode yang Cocok</th>
@@ -657,7 +667,7 @@
                 <td>Applied Research</td>
                 <td>Eksperimen &amp; Survey</td>
               </tr>
-            </table>
+            </table></div>
           </div>
         </div>
 
@@ -668,7 +678,7 @@
             <div class="card-title">Jenis Metode — Berdasarkan Tempat</div>
           </div>
           <div class="card-body">
-            <table class="study">
+            <div class="table-responsive"><table class="study">
               <tr>
                 <th>Metode</th>
                 <th>Tempat</th>
@@ -693,7 +703,7 @@
                 <td>Tidak ada perlakuan</td>
                 <td>Kualitatif</td>
               </tr>
-            </table>
+            </table></div>
             <div class="highlight">
               <h4>Contoh Metode Eksperimen</h4>
               Pengaruh ruang kerja ber-AC terhadap produktivitas kerja
@@ -888,7 +898,7 @@
             <div class="card-title">Perbedaan Aksioma: Kuantitatif vs Kualitatif</div>
           </div>
           <div class="card-body">
-            <table class="study">
+            <div class="table-responsive"><table class="study">
               <tr>
                 <th>Aksioma Dasar</th>
                 <th>Metode Kuantitatif</th>
@@ -919,7 +929,7 @@
                 <td>Cenderung bebas nilai</td>
                 <td>Terikat nilai yang dibawa peneliti dan sumber data</td>
               </tr>
-            </table>
+            </table></div>
             <div class="two-col-content" style="margin-top:1rem;">
               <div class="col-box accent-border">
                 <h4>Metode Kuantitatif</h4>
@@ -1024,7 +1034,7 @@
               <strong>Variabel penelitian</strong> adalah segala sesuatu yang berbentuk apa saja yang ditetapkan oleh
               peneliti untuk dipelajari sehingga diperoleh informasi, kemudian ditarik kesimpulannya.
             </div>
-            <table class="study">
+            <div class="table-responsive"><table class="study">
               <tr>
                 <th>Variabel</th>
                 <th>Nama Lain</th>
@@ -1062,7 +1072,7 @@
                   komparatif</td>
                 <td>—</td>
               </tr>
-            </table>
+            </table></div>
           </div>
         </div>
 
@@ -1281,7 +1291,7 @@
                 <td>Adakah hubungan signifikan antara tinggi badan pelayan toko dengan barang yang terjual?</td>
                 <td>H₀: ρ = 0 (tidak ada hubungan) / H₁: ρ ≠ 0 (ada hubungan)</td>
               </tr>
-            </table>
+            </table></div>
             <div class="highlight" style="margin-top:1rem;">
               <h4>Karakteristik Hipotesis yang Baik</h4>
               <ul class="styled">
@@ -1317,7 +1327,7 @@
             <div class="card-title">Keterkaitan: Paradigma → Rumusan Masalah → Hipotesis</div>
           </div>
           <div class="card-body">
-            <table class="study">
+            <div class="table-responsive"><table class="study">
               <tr>
                 <th>Rumusan Masalah</th>
                 <th>Bentuk Hipotesis</th>
@@ -1342,7 +1352,7 @@
                 <td>Korelasi, regresi</td>
                 <td>Hubungan 2+ variabel: ρ=0 vs ρ≠0</td>
               </tr>
-            </table>
+            </table></div>
           </div>
         </div>
 
@@ -1559,7 +1569,7 @@
               <span class="badge ink">3. Rating Scale</span>
               <span class="badge outline">4. Semantic Differential</span>
             </div>
-            <table class="study">
+            <div class="table-responsive"><table class="study">
               <tr>
                 <th>Skala</th>
                 <th>Karakteristik</th>
@@ -1591,7 +1601,7 @@
                 <td>Bersahabat ←5 4 3 2 1→ Tidak Bersahabat</td>
                 <td>5 (sangat positif) sampai 1 (sangat negatif) atau sebaliknya</td>
               </tr>
-            </table>
+            </table></div>
           </div>
         </div>
 
@@ -1603,7 +1613,7 @@
           </div>
           <div class="card-body">
             <p class="small" style="margin-bottom:0.5rem;">100 orang karyawan menilai prosedur kerja baru:</p>
-            <table class="study">
+            <div class="table-responsive"><table class="study">
               <tr>
                 <th>Jawaban</th>
                 <th>Jumlah</th>
@@ -1644,7 +1654,7 @@
                 <td colspan="3"><strong>Jumlah Total</strong></td>
                 <td><strong>350</strong></td>
               </tr>
-            </table>
+            </table></div>
             <div class="scale-bar" style="margin-top:1rem;"></div>
             <div class="scale-labels">
               <span>STS (100)</span>
