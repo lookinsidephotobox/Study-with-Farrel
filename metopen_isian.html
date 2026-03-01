@@ -885,14 +885,14 @@
 
         function playDing() {
             // High, pleasant ping
-            playTone(800, 'sine', 0.1, 0.1);
-            setTimeout(() => playTone(1200, 'sine', 0.2, 0.1), 100);
+            // playTone(800, 'sine', 0.1, 0.1);
+            // setTimeout(() => playTone(1200, 'sine', 0.2, 0.1), 100);
         }
 
         function playThud() {
             // Low, dull thud
-            playTone(150, 'triangle', 0.1, 0.2);
-            setTimeout(() => playTone(100, 'triangle', 0.2, 0.2), 100);
+            // playTone(150, 'triangle', 0.1, 0.2);
+            // setTimeout(() => playTone(100, 'triangle', 0.2, 0.2), 100);
         }
 
         function triggerConfetti() {
@@ -1016,6 +1016,8 @@
             element.style.position = 'absolute';
             element.style.top = '0';
             element.style.left = '0';
+            element.style.zIndex = '9999';
+            element.style.backgroundColor = '#ffffff';
 
             var opt = {
                 margin: [10, 10, 20, 10],
@@ -1024,7 +1026,8 @@
                 html2canvas: {
                     scale: 2,
                     useCORS: true,
-                    logging: false,
+                    logging: true,
+                    backgroundColor: '#ffffff',
                     width: 800,           // Force width of the capture
                     windowWidth: 800,     // Force virtual window width
                     scrollY: 0            // Ensure no vertical offset
@@ -1038,7 +1041,7 @@
                     element.style.display = 'none';
                     element.style.position = '';
                 });
-            }, 500);
+            }, 1000);
         }
 
         // --- PWA Service Worker Registration ---
