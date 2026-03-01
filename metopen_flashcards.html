@@ -467,8 +467,6 @@
                     </div>
                 </div>
 
-                <!-- Hidden Print Append area for PDF generation -->
-                <div id="print-only-content" style="display:none;"></div>
             </div>
         </div>
 
@@ -616,33 +614,45 @@
         }
 
         function downloadPDF() {
+            // 1. Scroll to top - CRITICAL for mobile capture accuracy
+            window.scrollTo(0, 0);
+
             const element = document.getElementById('print-only-content');
+
+            // 2. Prepare isolated element styling
             element.style.display = 'block';
             element.style.width = '800px';
+            element.style.position = 'absolute';
+            element.style.top = '0';
+            element.style.left = '0';
 
             var opt = {
-                margin: [10, 10, 20, 10], // t, l, b, r
+                margin: [10, 10, 20, 10],
                 filename: 'Flashcards_Esai_Metopen_P1_P5.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: {
                     scale: 2,
                     useCORS: true,
                     logging: false,
-                    windowWidth: 800,
-                    windowHeight: 600,
-                    scrollY: 0
+                    width: 800,           // Force width of the capture
+                    windowWidth: 800,     // Force virtual window width
+                    scrollY: 0            // Ensure no vertical offset
                 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
                 pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
             };
 
+            // 3. Generate and cleanup
             html2pdf().set(opt).from(element).save().then(() => {
                 element.style.display = 'none';
-                element.style.width = '';
+                element.style.position = '';
             });
         }
 
     </script>
+    <!-- Hidden Print Append area for PDF generation at root level -->
+    <div id="print-only-content"
+        style="display:none; position: absolute; left: 0; top: 0; background: #fff; z-index: 9999;"></div>
 </body>
 
 </html>
