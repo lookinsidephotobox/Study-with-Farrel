@@ -13,7 +13,7 @@
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
         rel="stylesheet">
     <!-- html2pdf for PDF generation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- No more html2pdf.js needed, using window.print() -->
     <script src="question_bank_100.js"></script>
 
     <style>
@@ -664,48 +664,34 @@
         }
 
         function buildPrintFriendlyContent() {
-            // Generate a printable version of the entire quiz as an ESSAY
+            // Generate a printable version of the entire quiz, appending correct answers/explanations at the bottom
             let html = `
-      <div style="font-family: serif; color: #000; position: relative; padding: 10mm 5mm;">
-        <!-- Header -->
-        <div style="text-align: right; font-size: 8pt; color: #666; margin-bottom: 5mm; border-bottom: 0.5pt solid #eee; padding-bottom: 2mm;">
-            Farrel Ananta Putra — Metodologi Penelitian
-        </div>
-
-        <h1 style="text-align:center; border-bottom: 2px solid #000; padding-bottom: 1rem; margin-bottom: 2rem;">Latihan Esai Metodologi Penelitian</h1>
-        <div style="margin-bottom: 3rem;">
+      <div style="font-family: 'DM Sans', sans-serif; color: #000; padding: 0;">
+        <h1 style="text-align:center; border-bottom: 2px solid #000; padding-bottom: 1rem; margin-bottom: 2rem;">Flashcards (Esai) Metodologi Penelitian</h1>
+        <div style="margin-bottom: 2rem;">
     `;
 
-            // 1. The Questions (with empty essay boxes)
             fcQuestions.forEach((q, i) => {
                 html += `
-        <div style="margin-bottom: 2rem; page-break-inside: avoid;">
-          <p style="font-weight: bold; margin-bottom: 0.5rem; font-size: 1.1em;">${i + 1}. ${q.text}</p>
-          <div class="essay-box" style="margin-top: 1rem; padding: 10px 0;">
-            <hr style="border: none; border-bottom: 1px dotted #999; margin: 25px 0;">
-            <hr style="border: none; border-bottom: 1px dotted #999; margin: 25px 0;">
-            <hr style="border: none; border-bottom: 1px dotted #999; margin: 25px 0;">
-            <hr style="border: none; border-bottom: 1px dotted #999; margin: 25px 0;">
-            <hr style="border: none; border-bottom: 1px dotted #999; margin: 25px 0;">
-          </div>
+        <div style="margin-bottom: 2.5rem; page-break-inside: avoid;">
+          <p style="font-weight: bold; margin-bottom: 0.5rem; line-height: 1.4; font-size: 1.1rem;">${i + 1}. ${q.text}</p>
+          <div style="border: 1.5pt solid #eee; border-radius: 8px; height: 10rem; width: 100%; background: #fafafa; margin-top: 0.8rem;"></div>
         </div>
       `;
             });
 
-            html += `</div>`; // end questions
+            html += `</div><div class="page-break"></div>`;
 
-            html += `<div class="page-break"></div>`;
-
-            // 2. Answers and Explanations
             html += `
         <h2 style="border-bottom: 1px solid #000; padding-bottom: 0.5rem; margin-bottom: 1.5rem;">Kunci Jawaban & Pembahasan</h2>
     `;
 
             fcQuestions.forEach((q, i) => {
                 html += `
-        <div style="margin-bottom: 1.5rem; page-break-inside: avoid;">
-          <p style="font-weight: bold;">${i + 1}. Jawaban: ${q.options[q.correct]}</p>
-          <p style="font-style: italic; font-size: 0.9em; margin-top: 0.3rem;">Penjelasan: ${q.explanation}</p>
+        <div style="margin-bottom: 2rem; page-break-inside: avoid;">
+          <p style="font-weight: bold;">${i + 1}. Jawaban Referensi:</p>
+          <p style="background:#f9f9f9; padding: 1rem; border-radius: 4px; border-left: 4px solid #333;">${q.options[q.correct]}</p>
+          <p style="font-style: italic; font-size: 0.9em; margin-top: 0.5rem;">Penjelasan: ${q.explanation}</p>
         </div>
       `;
             });
@@ -715,58 +701,50 @@
         <div style="text-align: center; font-size: 8pt; color: #888; margin-top: 10mm; border-top: 0.5pt solid #eee; padding-top: 3mm;">
             © Farrel Ananta Putra | Metodologi Penelitian Study Guide
         </div>
-      </div>`; // end font wrapper
-
-            document.getElementById('print-only-content').innerHTML = html;
+      </div>`;
+            return html;
         }
 
         function downloadPDF() {
             // 0. Build content based on selected filter
             const filter = materialFilter.value;
             fcQuestions = filter === 'all' ? bank : bank.filter(q => q.cat === filter);
-            buildPrintFriendlyContent();
+            const printableHtml = buildPrintFriendlyContent();
 
-            window.scrollTo(0, 0);
-
-            const element = document.getElementById('print-only-content');
-
-            // Make visible (visibility:hidden keeps layout, display:none = height 0)
-            element.style.visibility = 'visible';
-            element.style.position = 'fixed';
-            element.style.left = '0';
-            element.style.top = '0';
-            element.style.width = '800px';
-            element.style.zIndex = '9999';
-            element.style.background = '#fff';
-
-            // Force browser reflow so scrollHeight is accurate
-            void element.offsetHeight;
-
-            var opt = {
-                margin: [10, 10, 20, 10],
-                filename: 'Flashcards_Esai_Metopen_P1_P5.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: {
-                    scale: 2,
-                    useCORS: true,
-                    logging: false,
-                    backgroundColor: '#ffffff',
-                    scrollY: 0,
-                    windowWidth: 800,
-                    windowHeight: element.scrollHeight
-                },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak: { mode: ['css', 'legacy'] }
-            };
-
+            // 1. Open new window for native printing
+            const w = window.open('', '_blank');
+            w.document.open();
+            w.document.write(`
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Flashcards Metopen P1-P5</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <style>
+        @page { size: A4; margin: 15mm; }
+        body { margin: 0; padding: 0; background: #fff; font-family: 'DM Sans', sans-serif; color: #111; line-height: 1.6; }
+        .page-break { page-break-before: always; }
+        h1, h2 { font-family: 'Playfair Display', serif; }
+        .print-container { width: 100%; max-width: 800px; margin: 0 auto; }
+    </style>
+</head>
+<body>
+    <div class="print-container">
+        ${printableHtml}
+    </div>
+    <script>
+        window.onload = () => {
+            window.focus();
             setTimeout(() => {
-                html2pdf().set(opt).from(element).save().then(() => {
-                    element.style.visibility = 'hidden';
-                    element.style.zIndex = '-1';
-                    element.style.position = 'fixed';
-                    element.style.left = '0';
-                });
-            }, 50);
+                window.print();
+            }, 500);
+        };
+    <\/script>
+</body>
+</html>
+            `);
+            w.document.close();
         }
 
         // --- PWA Service Worker Registration ---
@@ -776,9 +754,8 @@
             });
         }
     </script>
-    <!-- Hidden Print Append area for PDF generation at root level -->
-    <div id="print-only-content"
-        style="visibility:hidden; position:fixed; left:0; top:0; width:800px; background:#fff; z-index:-1;"></div>
+    <!-- Hidden helper div for string building, not used for rendering anymore -->
+    <div id="print-only-content" style="display:none;"></div>
 </body>
 
 </html>
