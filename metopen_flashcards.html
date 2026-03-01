@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz — Metodologi Penelitian</title>
+    <title>Flashcards — Metodologi Penelitian</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
         rel="stylesheet">
@@ -23,8 +23,6 @@
             --card-bg: #ffffff;
             --border: #d4cdbf;
             --tag-bg: #f0ebe0;
-            --wrong: #e74c3c;
-            --correct: #2ecc71;
         }
 
         * {
@@ -166,11 +164,6 @@
             background: var(--gold);
         }
 
-        .btn:disabled {
-            background: var(--muted);
-            cursor: not-allowed;
-        }
-
         .btn-accent {
             background: var(--accent);
         }
@@ -179,8 +172,8 @@
             background: #a83214;
         }
 
-        /* Quiz Layout */
-        .quiz-header {
+        /* Flashcard Layout */
+        .flashcard-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -189,115 +182,94 @@
             border-bottom: 2px dashed var(--border);
         }
 
-        .score-badge {
-            background: var(--gold);
-            color: #fff;
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
-
-        .question-container {
+        .fc-container {
+            perspective: 1000px;
             margin-bottom: 2rem;
+            height: 350px;
         }
 
-        .question-text {
-            font-size: 1.1rem;
-            font-weight: 500;
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
+        .fc {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
         }
 
-        .options-grid {
+        .fc.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .fc-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
             display: flex;
             flex-direction: column;
-            gap: 0.8rem;
-        }
-
-        .option {
-            display: flex;
-            align-items: flex-start;
-            padding: 1rem;
-            background: var(--light);
-            border: 1.5px solid var(--border);
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .option:hover {
-            background: var(--tag-bg);
-            border-color: var(--gold);
-        }
-
-        .option.selected {
-            background: #fffcf5;
-            border-color: var(--gold);
-            box-shadow: 0 0 0 1px var(--gold);
-        }
-
-        .option.correct-review {
-            background: #ebf9f1;
-            border-color: var(--correct);
-        }
-
-        .option.wrong-review {
-            background: #fdf2f0;
-            border-color: var(--wrong);
-        }
-
-        .option.disabled {
-            opacity: 0.4;
-            pointer-events: none;
-        }
-
-        .option-letter {
-            font-weight: 700;
-            color: var(--accent);
-            margin-right: 1rem;
-            font-family: 'DM Mono', monospace;
-        }
-
-        .quiz-tools {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border);
-        }
-
-        .tool-btn {
-            background: var(--cream);
-            color: var(--ink);
-            border: 1.5px solid var(--border);
-            padding: 0.5rem 1rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
             align-items: center;
-            gap: 0.5rem;
+            justify-content: center;
+            padding: 2rem;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
         }
 
-        .tool-btn:hover {
-            background: var(--tag-bg);
+        .fc-front {
+            background: var(--card-bg);
         }
 
-        .tool-btn i {
+        .fc-back {
+            background: var(--light);
+            transform: rotateY(180deg);
+            border-color: var(--gold);
+            overflow-y: auto;
+        }
+
+        .fc-cat {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .fc-hint {
+            position: absolute;
+            bottom: 1rem;
+            font-size: 0.8rem;
+            color: var(--muted);
+            font-style: italic;
+        }
+
+        .fc-qtext {
+            font-size: 1.3rem;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .fc-ans-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
             color: var(--accent);
-            font-style: normal;
-            font-weight: 900;
+            margin-bottom: 1rem;
         }
 
-        .hint-box {
-            display: none;
-            margin-top: 1rem;
-            padding: 1rem;
-            background: #fff8f0;
-            border-left: 4px solid var(--gold);
+        .fc-ans-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .fc-ans-exp {
             font-size: 0.9rem;
+            line-height: 1.5;
+            color: var(--muted);
         }
 
         .nav-buttons {
@@ -312,44 +284,9 @@
             margin-bottom: 2rem;
         }
 
-        .final-score {
-            font-family: 'Playfair Display', serif;
+        .final-icon {
             font-size: 4rem;
-            color: var(--accent);
-            line-height: 1;
             margin: 1rem 0;
-        }
-
-        .study-card {
-            background: var(--light);
-            border-left: 4px solid var(--accent);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border-radius: 0 4px 4px 0;
-        }
-
-        .study-card.gold {
-            border-left-color: var(--gold);
-        }
-
-        .study-card h4 {
-            font-family: 'DM Mono', monospace;
-            color: var(--muted);
-            font-size: 0.8rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .study-card .q-text {
-            font-weight: 600;
-            margin-bottom: 0.8rem;
-        }
-
-        .study-card .explanation {
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            background: #fff;
-            padding: 1rem;
-            border: 1px dashed var(--border);
         }
 
         /* Print Styles hiding UI elements */
@@ -360,7 +297,6 @@
             }
 
             nav,
-            .quiz-tools,
             .nav-buttons,
             #btn-download {
                 display: none !important;
@@ -393,9 +329,15 @@
             .page-break {
                 page-break-before: always;
             }
+
+            .essay-box {
+                border: 1px solid #ccc;
+                min-height: 150px;
+                margin-top: 1rem;
+                border-radius: 4px;
+            }
         }
 
-        /* Print-specific layout container */
         #pdf-wrapper {
             background: #fff;
         }
@@ -405,7 +347,7 @@
 <body>
 
     <header>
-        <h1>Kuis <span>Metopen</span></h1>
+        <h1>Flashcards <span>Metopen</span></h1>
     </header>
 
     <nav>
@@ -416,66 +358,66 @@
 
         <!-- SCREEN 1: SETUP -->
         <div id="screen-setup" class="screen active card">
-            <h2>Konfigurasi Kuis</h2>
-            <p>Generate kuis acak dari materi P1 s/d P5 Metodologi Penelitian.<br>Fitur alat bantu (Hint & 50:50)
-                tersedia dengan penalti skor.</p>
+            <h2>Konfigurasi Flashcards</h2>
+            <p>Generate flashcards acak dari materi P1 s/d P5 Metodologi Penelitian.<br>Gunakan fitur ini untuk melatih
+                ingatan Anda secara mandiri (tanpa skor). Unduh PDF pada halaman akhir untuk ujian esai cetak.</p>
 
             <div class="setup-form">
                 <div>
-                    <label for="num-questions">Jumlah Pertanyaan:</label>
+                    <label for="num-cards">Jumlah Kartu:</label>
                     <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 0.5rem;">Total bank soal tersedia:
-                        <span id="max-q">15</span></p>
-                    <input type="number" id="num-questions" min="1" max="15" value="10">
+                        <span id="max-q">15</span>
+                    </p>
+                    <input type="number" id="num-cards" min="1" max="15" value="5">
                 </div>
                 <div>
-                    <button class="btn" onclick="startQuiz()">Mulai Kuis</button>
+                    <button class="btn" onclick="startFlashcards()">Mulai Review</button>
                 </div>
             </div>
         </div>
 
-        <!-- SCREEN 2: ACTIVE QUIZ -->
-        <div id="screen-quiz" class="screen card">
-            <div class="quiz-header">
-                <div style="font-family: 'DM Mono', monospace; font-weight: 500;">Pertanyaan <span
-                        id="current-q-num">1</span> dari <span id="total-q-num">10</span></div>
-                <div class="score-badge">Skor: <span id="live-score">100</span></div>
+        <!-- SCREEN 2: ACTIVE FLASHCARD -->
+        <div id="screen-fc" class="screen">
+            <div class="flashcard-header">
+                <div style="font-family: 'DM Mono', monospace; font-weight: 500;">Kartu <span
+                        id="current-q-num">1</span> dari <span id="total-q-num">5</span></div>
             </div>
 
-            <div class="question-container" id="q-container">
-                <!-- Injected by JS -->
+            <div class="fc-container" onclick="flipCard()">
+                <div class="fc" id="fc-el">
+                    <!-- Front -->
+                    <div class="fc-face fc-front">
+                        <div class="fc-cat" id="fc-cat">[P1]</div>
+                        <div class="fc-qtext" id="fc-qtext">Pertanyaan...</div>
+                        <div class="fc-hint">Klik kartu untuk melihat jawaban</div>
+                    </div>
+                    <!-- Back -->
+                    <div class="fc-face fc-back">
+                        <div class="fc-ans-title">Jawaban:</div>
+                        <div class="fc-ans-text" id="fc-ans-text">Jawaban benarnya...</div>
+                        <div class="fc-ans-exp" id="fc-ans-exp">Penjelasan...</div>
+                        <div class="fc-hint">Pilih selanjutnya untuk lanjut</div>
+                    </div>
+                </div>
             </div>
-
-            <div class="quiz-tools">
-                <button class="tool-btn" id="btn-hint" onclick="useHint()"><i>💡</i> Hint (-5 Poin)</button>
-                <button class="tool-btn" id="btn-5050" onclick="use5050()"><i>✂</i> Hilangkan 3 Salah (-10
-                    Poin)</button>
-            </div>
-
-            <div class="hint-box" id="hint-box"></div>
 
             <div class="nav-buttons">
-                <button class="btn" id="btn-next" onclick="nextQuestion()">Selanjutnya →</button>
-                <button class="btn btn-accent" id="btn-finish" onclick="finishQuiz()" style="display:none;">Selesaikan
-                    Kuis</button>
+                <button class="btn" id="btn-next" onclick="nextCard()">Selanjutnya →</button>
+                <button class="btn btn-accent" id="btn-finish" onclick="finishSession()"
+                    style="display:none;">Selesai</button>
             </div>
         </div>
 
-        <!-- SCREEN 3: RESULT & STUDY CARDS -->
+        <!-- SCREEN 3: RESULT -->
         <div id="screen-result" class="screen">
             <div id="pdf-wrapper">
                 <div class="card result-header">
-                    <h2>Hasil Kuis Anda</h2>
-                    <div class="final-score" id="final-score">85</div>
-                    <p>Skor maksimal: <span id="max-score">100</span></p>
+                    <h2>Sesi Review Selesai!</h2>
+                    <div class="final-icon">🧠</div>
+                    <p>Anda telah mereview <span id="final-total"></span> kartu pembelajaran. Terus biasakan untuk
+                        mengingat materi tanpa bantuan lho!</p>
                     <button class="btn btn-accent" id="btn-download" onclick="downloadPDF()"
-                        style="margin-top: 1rem;">🖨 Unduh PDF (Kuis + Jawaban)</button>
-                </div>
-
-                <div id="review-container">
-                    <h3>Kartu Pembelajaran (Review)</h3>
-                    <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 1.5rem;">Evaluasi dari soal yang
-                        dijawab salah atau dibantu.</p>
-                    <div id="study-cards-list"></div>
+                        style="margin-top: 1rem;">🖨 Unduh PDF (Latihan Esai + Kunci)</button>
                 </div>
 
                 <!-- Hidden Print Append area for PDF generation -->
@@ -486,14 +428,13 @@
     </main>
 
     <script>
-        // QUESTION BANK
+        // QUESTION BANK (Same as Quiz)
         const bank = [
             {
                 id: "q1", cat: "P1",
                 text: "Apa tujuan penelitian menurut Prof. Sugiyono yang bertujuan untuk memperdalam dan memperluas pengetahuan yang telah ada?",
                 options: ["Penemuan", "Pembuktian", "Pengembangan", "Deskriptif", "Eksperimen"],
                 correct: 2,
-                hint: "Tiga tujuan menurut Prof. Sugiyono adalah penemuan, pembuktian, dan pengembangan. Memperluas berhubungan dengan meng-kembangkan sesuatu.",
                 explanation: "Pengembangan bertujuan memperdalam dan memperluas pengetahuan yang telah ada, berbeda dengan penemuan (hal baru) dan pembuktian (menguji keraguan)."
             },
             {
@@ -501,7 +442,6 @@
                 text: "Berikut ini yang termasuk dalam proses Scientific Research pada tahap pertama adalah...",
                 options: ["Analisis Data", "Definisi Konseptual", "Hipotesis", "Formulasi Topik", "Pengumpulan Data"],
                 correct: 3,
-                hint: "Langkah pertama sebelum melakukan hal lain dalam riset adalah menentukan apa yang mau dibahas.",
                 explanation: "8 Langkah Scientific Research diawali dengan Formulasi Topik, kemudian Hipotesis, Definisi Konseptual, Operasional, Pengumpulan Data, Analisis, Uji, dan Kesimpulan."
             },
             {
@@ -509,7 +449,6 @@
                 text: "Penelitian dasar (Basic Research) yang berfokus pada penemuan ilmu baru paling cocok menggunakan metode...",
                 options: ["Eksperimen & Survey", "Survey & Kualitatif", "Eksperimen & Kualitatif", "Naturalistik & Survey", "R&D & Deskriptif"],
                 correct: 2,
-                hint: "Cocok dengan eksperimen di lab dan pendekatan yang meneliti fenomena alamiah/artistik untuk ilmu baru.",
                 explanation: "Basic research (penemuan ilmu baru) paling cocok dengan metode Eksperimen & Kualitatif."
             },
             {
@@ -517,7 +456,6 @@
                 text: "Dalam aksioma penelitian, sifat realitas pada metode Kualitatif adalah...",
                 options: ["Konkrit, teramati, terukur", "Ganda, holistik, dinamis", "Tunggal, statis, prediktif", "Bebas nilai", "Hubungan sebab-akibat (kausal)"],
                 correct: 1,
-                hint: "Bukan sesuatu yang terukur secara pasti dan tunggal, melainkan hasil konstruksi pemahaman yang luas.",
                 explanation: "Menurut perbandingan aksioma, metode kualitatif melihat realitas sebagai ganda, holistik, dinamis, hasil konstruksi & pemahaman (sedangkan kuantitatif konkrit & terukur)."
             },
             {
@@ -525,7 +463,6 @@
                 text: "Variabel yang secara teoritis mempengaruhi (memperkuat atau memperlemah) hubungan antara variabel independen dan dependen disebut variabel...",
                 options: ["Intervening", "Kontrol", "Moderator", "Asosiatif", "Komparatif"],
                 correct: 2,
-                hint: "Dia punya fungsi untuk memoderasi hubungan antara sebab dan akibat.",
                 explanation: "Variabel Moderator adalah variabel yang mempengaruhi (memperkuat/memperlemah) hubungan antara IV dan DV dan dapat diukur. (Intervening tidak dapat diukur/diamati langsung)."
             },
             {
@@ -533,7 +470,6 @@
                 text: "Rumusan masalah yang menanyakan hubungan antara dua variabel atau lebih disebut rumusan masalah...",
                 options: ["Komparatif", "Asosiatif", "Deskriptif", "Eksploratif", "Deduktif"],
                 correct: 1,
-                hint: "Berasal dari kata asosiasi (hubungan/keterkaitan).",
                 explanation: "Asosiatif adalah rumusan masalah yang menanyakan hubungan dua variabel/lebih (contoh: hubungan antara motivasi belajar dan indeks prestasi)."
             },
             {
@@ -541,7 +477,6 @@
                 text: "Teknik pengambilan sampel yang memberikan peluang yang sama bagi setiap anggota populasi untuk dipilih dinamakan...",
                 options: ["Non Probability Sampling", "Quota Sampling", "Probability Sampling", "Snowball Sampling", "Purposive Sampling"],
                 correct: 2,
-                hint: "Teknik ini menekankan 'peluang' atau probabilitas yang setara.",
                 explanation: "Probability Sampling adalah teknik yang memberikan peluang sama bagi setiap anggota populasi untuk dipilih (contoh: Simple Random Sampling)."
             },
             {
@@ -549,7 +484,6 @@
                 text: "Menurut Roscoe (1982), ukuran sampel yang layak dalam penelitian eksperimen sederhana untuk grup eksperimen dan grup kontrol masing-masing adalah...",
                 options: ["30 s/d 500 orang", "Minimal 30 orang per kategori", "Minimal 10 kali jumlah variabel", "10 - 20 orang", "Seluruh anggota populasi"],
                 correct: 3,
-                hint: "Angkanya jauh lebih kecil dibandingkan ukuran kelayakan secara umum (30-500).",
                 explanation: "Untuk eksperimen sederhana (kelompok eksperimen + kontrol), Roscoe menyarankan ukuran sampel yang kecil/layak yakni masing-masing 10–20 orang."
             },
             {
@@ -557,7 +491,6 @@
                 text: "Hipotesis statistik digunakan apabila penelitian menggunakan data yang berasal dari...",
                 options: ["Sensus (Seluruh Populasi)", "Sampel", "Literatur/Studi Pustaka", "Wawancara mendalam terisolasi", "Data Sekunder murni"],
                 correct: 1,
-                hint: "Statistik inferensial digunakan untuk menggeneralisasi sebagian data ke keseluruhan data.",
                 explanation: "Hipotesis statistik digunakan HANYA jika penelitian bekerja menggunakan sampel, untuk membedakan apakah nilai sampel merepresentasikan populasi parameternya."
             },
             {
@@ -565,15 +498,13 @@
                 text: "Hipotesis yang menyatakan 'Adanya perbedaan penghasilan yang signifikan antara petani dan nelayan' termasuk dalam jenis hipotesis...",
                 options: ["Deskriptif", "Asosiatif", "Komparatif", "Kausal", "Struktural"],
                 correct: 2,
-                hint: "Membandingkan dua kelompok yang berbeda (komparasi).",
-                explanation: "Hipotesis komparatif adalah dugaan tentang perbedaan suatu variabel padampel/populasi yang berbeda (petani vs nelayan)."
+                explanation: "Hipotesis komparatif adalah dugaan tentang perbedaan suatu variabel pada sampel/populasi yang berbeda (petani vs nelayan)."
             },
             {
                 id: "q11", cat: "P4",
                 text: "Jika rumusan masalahnya adalah Asosiatif (mencari hubungan), maka metode analisis data statistik yang paling tepat digunakan adalah...",
                 options: ["Statistik deskriptif (mean, persentase)", "Uji beda (t-test, ANOVA)", "Korelasi dan regresi", "Non-parametrik Wilcoxon", "Generalisasi Proposi"],
                 correct: 2,
-                hint: "Alat uji ini digunakan untuk mengetahui kuat/tidaknya hubungan dan pengaruh (R dan R-Square).",
                 explanation: "Masalah asosiatif (hubungan) diukur menggunakan alat analisis Korelasi (hubungan) atau Regresi (pengaruh)."
             },
             {
@@ -581,7 +512,6 @@
                 text: "Skala pengukuran yang hanya memiliki jawaban tegas dikotomis (seperti Ya-Tidak / Benar-Salah) adalah jenis skala...",
                 options: ["Skala Likert", "Rating Scale", "Semantic Differential", "Skala Guttman", "Thurstone"],
                 correct: 3,
-                hint: "Menghasilkan skor 1 (Ya/Setuju) dan 0 (Tidak/Menolak).",
                 explanation: "Skala Guttman memberikan jawaban tegas dan jelas (dikotomis), misal Ya–Tidak, Benar-Salah, Positif-Negatif."
             },
             {
@@ -589,7 +519,6 @@
                 text: "Mengukur sikap, persepsi tentang fenomena sosial dengan tingkat jawaban dari 'Sangat Setuju' sampai 'Sangat Tidak Setuju' merupakan fungsi dari...",
                 options: ["Skala Guttman", "Semantic Differential", "Skala Likert", "Rating Scale", "Skala Ordinal Nominal"],
                 correct: 2,
-                hint: "Sangat populer digunakan di kuesioner dengan rentang skor 1-5.",
                 explanation: "Skala Likert digunakan untuk mengukur sikap, persepsi, dan pendapat fenomena sosial dengan tingkatan (SS, ST, RG, TS, STS)."
             },
             {
@@ -597,7 +526,6 @@
                 text: "Mendapatkan data primer dapat dilakukan dengan metode pengumpulan di bawah ini, kecuali...",
                 options: ["Kuesioner", "Wawancara kelompok fokus (FGD)", "Observasi lapangan", "Membaca laporan statistik Biro Pusat Statistik (BPS)", "Studi Kasus individual"],
                 correct: 3,
-                hint: "Data primer diambil langsung oleh peneliti. Mana yang bukan diambil langsung?",
                 explanation: "Laporan BPS, dokumen perusahaan, dan jurnal adalah sumber Data Sekunder, bukan Primer."
             },
             {
@@ -605,23 +533,18 @@
                 text: "The Response Process dalam kuesioner terdiri dari 4 langkah potensial error. Langkah pertama yang harus dilakukan responden adalah...",
                 options: ["Memahami pertanyaan", "Membaca pertanyaan", "Memilih opsi jawaban", "Menerjemahkan ke kategori nilai", "Mengingat pengalaman relevan"],
                 correct: 1,
-                hint: "Hal paling mendasar sebelum bisa menjawab pertanyaan tertulis.",
                 explanation: "The Response Process: 1) Pertanyaan harus dibaca, 2) Pertanyaan dipahami, 3) Membuat respons, 4) Diterjemahkan ke kategori yang ada."
             }
         ];
 
         // STATE
-        let quizQuestions = [];
+        let fcQuestions = [];
         let currentIdx = 0;
-        let score = 0;
-        let maxScore = 0;
-        let userAnswers = []; // store selected options and statuses
-        let quizHistory = []; // { q, selected, correct, pointsEarned, usedHint, used5050 }
 
         // DOM
-        const inNumQuestions = document.getElementById('num-questions');
+        const inNumCards = document.getElementById('num-cards');
         document.getElementById('max-q').innerText = bank.length;
-        inNumQuestions.max = bank.length;
+        inNumCards.max = bank.length;
 
         function shuffle(array) {
             let curId = array.length, randomId;
@@ -633,27 +556,22 @@
             return array;
         }
 
-        function startQuiz() {
-            let num = parseInt(inNumQuestions.value);
+        function startFlashcards() {
+            let num = parseInt(inNumCards.value);
             if (num < 1) num = 1;
             if (num > bank.length) num = bank.length;
 
-            // Pick questions (try to get from different cats if possible, but mostly shuffle)
+            // Pick questions
             let shuffledBank = shuffle([...bank]);
-            quizQuestions = shuffledBank.slice(0, num);
+            fcQuestions = shuffledBank.slice(0, num);
 
             // Reset state
             currentIdx = 0;
-            maxScore = num * 100;
-            score = maxScore; // start max, minus penalties
-            quizHistory = [];
-            userAnswers = new Array(num).fill(null);
-
             document.getElementById('total-q-num').innerText = num;
-            updateLiveScore();
+            document.getElementById('final-total').innerText = num;
 
-            switchScreen('screen-quiz');
-            renderQuestion(currentIdx);
+            switchScreen('screen-fc');
+            renderCard(currentIdx);
         }
 
         function switchScreen(id) {
@@ -662,42 +580,20 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function updateLiveScore() {
-            document.getElementById('live-score').innerText = score;
-        }
-
-        function renderQuestion(idx) {
-            const q = quizQuestions[idx];
-            const letters = ['A', 'B', 'C', 'D', 'E'];
+        function renderCard(idx) {
+            const q = fcQuestions[idx];
             document.getElementById('current-q-num').innerText = idx + 1;
 
-            // Reset Tools UI
-            document.getElementById('hint-box').style.display = 'none';
-            document.getElementById('hint-box').innerText = '';
-            document.getElementById('btn-hint').disabled = false;
-            document.getElementById('btn-5050').disabled = false;
+            const fcEl = document.getElementById('fc-el');
+            fcEl.classList.remove('flipped');
 
-            // If already answered/recorded history (navigation back?), normally no back btn, but just in case
+            document.getElementById('fc-cat').innerText = `[${q.cat}]`;
+            document.getElementById('fc-qtext').innerText = q.text;
 
-            let html = `
-      <div class="question-text"><span style="color:var(--muted); font-size:0.8rem; font-family:'DM Mono', monospace;">[${q.cat}]</span><br> ${q.text}</div>
-      <div class="options-grid" id="options-grid">
-    `;
+            document.getElementById('fc-ans-text').innerText = q.options[q.correct];
+            document.getElementById('fc-ans-exp').innerText = q.explanation;
 
-            q.options.forEach((opt, i) => {
-                html += `
-        <div class="option" id="opt-${i}" onclick="selectOption(${i})">
-          <div class="option-letter">${letters[i]}</div>
-          <div class="option-text">${opt}</div>
-        </div>
-      `;
-            });
-
-            html += `</div>`;
-            document.getElementById('q-container').innerHTML = html;
-
-            // Nav buttons
-            if (idx === quizQuestions.length - 1) {
+            if (idx === fcQuestions.length - 1) {
                 document.getElementById('btn-next').style.display = 'none';
                 document.getElementById('btn-finish').style.display = 'block';
             } else {
@@ -706,142 +602,43 @@
             }
         }
 
-        function selectOption(optIdx) {
-            // Deselect others
-            document.querySelectorAll('.option').forEach(el => el.classList.remove('selected'));
-            // Select this
-            document.getElementById(`opt-${optIdx}`).classList.add('selected');
-            userAnswers[currentIdx] = optIdx;
+        function flipCard() {
+            const fcEl = document.getElementById('fc-el');
+            fcEl.classList.toggle('flipped');
         }
 
-        function useHint() {
-            const q = quizQuestions[currentIdx];
-            document.getElementById('hint-box').innerText = "💡 Hint: " + q.hint;
-            document.getElementById('hint-box').style.display = 'block';
-
-            score -= 5;
-            updateLiveScore();
-            document.getElementById('btn-hint').disabled = true;
-
-            // mark in history later
-            q._usedHint = true;
+        function nextCard() {
+            currentIdx++;
+            renderCard(currentIdx);
         }
 
-        function use5050() {
-            const q = quizQuestions[currentIdx];
-            let wrongs = [];
-            q.options.forEach((_, i) => { if (i !== q.correct) wrongs.push(i); });
-            wrongs = shuffle(wrongs);
-
-            // Remove 3 wrong options since it's A-E (5 options)
-            const toRemove = wrongs.slice(0, 3);
-            toRemove.forEach(idx => {
-                document.getElementById(`opt-${idx}`).classList.add('disabled');
-                document.getElementById(`opt-${idx}`).style.opacity = '0.3';
-            });
-
-            score -= 10;
-            updateLiveScore();
-            document.getElementById('btn-5050').disabled = true;
-
-            q._used5050 = true;
-        }
-
-        function checkAndSaveCurrent() {
-            const q = quizQuestions[currentIdx];
-            const selected = userAnswers[currentIdx];
-
-            if (selected === null || selected === undefined) {
-                alert("Silakan pilih jawaban terlebih dahulu!");
-                return false;
-            }
-
-            let isCorrect = (selected === q.correct);
-            if (!isCorrect) {
-                score -= 100; // Deduct the 100 points for this question if wrong
-            }
-
-            if (score < 0) score = 0;
-            updateLiveScore();
-
-            quizHistory.push({
-                question: q,
-                selected: selected,
-                isCorrect: isCorrect,
-                usedHint: q._usedHint || false,
-                used5050: q._used5050 || false
-            });
-
-            return true;
-        }
-
-        function nextQuestion() {
-            if (checkAndSaveCurrent()) {
-                currentIdx++;
-                renderQuestion(currentIdx);
-            }
-        }
-
-        function finishQuiz() {
-            if (checkAndSaveCurrent()) {
-                buildResultScreen();
-                switchScreen('screen-result');
-            }
-        }
-
-        function buildResultScreen() {
-            document.getElementById('final-score').innerText = score;
-            document.getElementById('max-score').innerText = maxScore;
-
-            const list = document.getElementById('study-cards-list');
-            let cardsHtml = '';
-
-            let needsReview = quizHistory.filter(h => !h.isCorrect || h.usedHint || h.used5050);
-
-            if (needsReview.length === 0) {
-                cardsHtml = `<p>Sempurna! Anda menguasai semua materi.</p>`;
-            } else {
-                needsReview.forEach((h, i) => {
-                    let statusText = !h.isCorrect ? "Jawaban Salah" : "Dijawab menggunakan alat bantu";
-                    let cardColor = !h.isCorrect ? "" : "gold";
-
-                    cardsHtml += `
-          <div class="study-card ${cardColor}">
-            <h4>${h.question.cat} — ${statusText}</h4>
-            <div class="q-text">Q: ${h.question.text}</div>
-            <div style="font-size:0.85rem">
-              <div><strong>Kunci Jawaban:</strong> ${document.querySelectorAll('.option-text')[0] ? h.question.options[h.question.correct] : h.question.options[h.question.correct]}</div>
-              <div class="explanation">💡 <strong>Penjelasan:</strong><br>${h.question.explanation}</div>
-            </div>
-          </div>
-        `;
-                });
-            }
-
-            list.innerHTML = cardsHtml;
+        function finishSession() {
             buildPrintFriendlyContent();
+            switchScreen('screen-result');
         }
 
         function buildPrintFriendlyContent() {
-            // Generate a printable version of the entire quiz, appending correct answers/explanations at the bottom
-            const letters = ['A', 'B', 'C', 'D', 'E'];
+            // Generate a printable version of the entire quiz as an ESSAY
             let html = `
       <div style="font-family: serif; color: #000;">
-        <h1 style="text-align:center; border-bottom: 2px solid #000; padding-bottom: 1rem; margin-bottom: 2rem;">Kuis Metodologi Penelitian</h1>
+        <h1 style="text-align:center; border-bottom: 2px solid #000; padding-bottom: 1rem; margin-bottom: 2rem;">Latihan Esai Metodologi Penelitian</h1>
         <div style="margin-bottom: 3rem;">
     `;
 
-            // 1. The Questions
-            quizQuestions.forEach((q, i) => {
+            // 1. The Questions (with empty essay boxes)
+            fcQuestions.forEach((q, i) => {
                 html += `
-        <div style="margin-bottom: 1.5rem; page-break-inside: avoid;">
-          <p style="font-weight: bold; margin-bottom: 0.5rem;">${i + 1}. ${q.text}</p>
-          <div style="padding-left: 1.5rem;">
+        <div style="margin-bottom: 2rem; page-break-inside: avoid;">
+          <p style="font-weight: bold; margin-bottom: 0.5rem; font-size: 1.1em;">${i + 1}. ${q.text}</p>
+          <div class="essay-box" style="margin-top: 1rem; padding: 10px 0;">
+            <hr style="border: none; border-bottom: 1px dotted #999; margin: 25px 0;">
+            <hr style="border: none; border-bottom: 1px dotted #999; margin: 25px 0;">
+            <hr style="border: none; border-bottom: 1px dotted #999; margin: 25px 0;">
+            <hr style="border: none; border-bottom: 1px dotted #999; margin: 25px 0;">
+            <hr style="border: none; border-bottom: 1px dotted #999; margin: 25px 0;">
+          </div>
+        </div>
       `;
-                q.options.forEach((opt, oIdx) => {
-                    html += `<p style="margin-bottom: 0.2rem;">${letters[oIdx]}. ${opt}</p>`;
-                });
-                html += `</div></div>`;
             });
 
             html += `</div>`; // end questions
@@ -853,10 +650,10 @@
         <h2 style="border-bottom: 1px solid #000; padding-bottom: 0.5rem; margin-bottom: 1.5rem;">Kunci Jawaban & Pembahasan</h2>
     `;
 
-            quizQuestions.forEach((q, i) => {
+            fcQuestions.forEach((q, i) => {
                 html += `
         <div style="margin-bottom: 1.5rem; page-break-inside: avoid;">
-          <p style="font-weight: bold;">${i + 1}. Jawaban: ${letters[q.correct]} (${q.options[q.correct]})</p>
+          <p style="font-weight: bold;">${i + 1}. Jawaban: ${q.options[q.correct]}</p>
           <p style="font-style: italic; font-size: 0.9em; margin-top: 0.3rem;">Penjelasan: ${q.explanation}</p>
         </div>
       `;
@@ -868,23 +665,19 @@
         }
 
         function downloadPDF() {
-            // Reveal print only content
             document.getElementById('print-only-content').style.display = 'block';
-            // Hide UI elements in screen-result that we don't want (or let the CSS handle it, but html2pdf might grab them if we just pass the element)
 
-            const element = document.getElementById('print-only-content'); // We just print the pure text version
+            const element = document.getElementById('print-only-content');
 
             var opt = {
                 margin: 15,
-                filename: 'Kuis_Metopen_P1_P5.pdf',
+                filename: 'Flashcards_Esai_Metopen_P1_P5.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // New Promise-based usage:
             html2pdf().set(opt).from(element).save().then(() => {
-                // hide it again
                 document.getElementById('print-only-content').style.display = 'none';
             });
         }

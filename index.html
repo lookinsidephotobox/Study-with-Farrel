@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Utama — Metodologi Penelitian</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0f0e0b;
+            --paper: #f5f0e8;
+            --cream: #ede8da;
+            --accent: #c8401e;
+            --gold: #b8923a;
+            --muted: #6b6456;
+            --light: #faf8f3;
+            --card-bg: #ffffff;
+            --border: #d4cdbf;
+            --tag-bg: #f0ebe0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--paper);
+            color: var(--ink);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--ink);
+            padding: 3rem 2rem 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 255, 255, 0.02) 10px, rgba(255, 255, 255, 0.02) 20px);
+        }
+
+        header .label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 0.75rem;
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            color: #fff;
+            line-height: 1.1;
+        }
+
+        header h1 span {
+            color: var(--gold);
+        }
+
+        header p {
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 0.75rem;
+            font-size: 0.9rem;
+            font-weight: 300;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .menu-card {
+            background: var(--card-bg);
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            width: 100%;
+            max-width: 500px;
+            padding: 2rem;
+            text-align: center;
+            text-decoration: none;
+            color: var(--ink);
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            border-color: var(--gold);
+        }
+
+        .menu-icon {
+            font-size: 3rem;
+        }
+
+        .menu-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .menu-desc {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="label">📚 Platform Pembelajaran Ujian Tertulis</div>
+        <h1>Metodologi <span>Penelitian</span></h1>
+        <p>Dr. Utriweni Mukhaiyar &amp; Amalia Listiani, S.Pd., M.Sc.</p>
+    </header>
+
+    <main>
+        <a href="metopen_study_cards.html" class="menu-card">
+            <div class="menu-icon">📖</div>
+            <div class="menu-title">Kartu Belajar (Study Cards)</div>
+            <div class="menu-desc">Pelajari rangkuman materi lengkap P1 hingga P5 dengan format yang mudah dibaca.
+                Menerapkan konsep active recall.</div>
+        </a>
+
+        <a href="metopen_quiz.html" class="menu-card" style="border-top: 4px solid var(--accent);">
+            <div class="menu-icon">🎯</div>
+            <div class="menu-title">Kuis Interaktif</div>
+            <div class="menu-desc">Latih pemahaman Anda melalui kuis acak berganda dengan fitur alat bantu. Cetak PDF
+                untuk kuis format pilihan ganda.</div>
+        </a>
+
+        <a href="metopen_flashcards.html" class="menu-card" style="border-top: 4px solid var(--gold);">
+            <div class="menu-icon">🧠</div>
+            <div class="menu-title">Flashcards (Esai)</div>
+            <div class="menu-desc">Uji ingatan murni Anda secara mandiri. Gunakan fitur PDF untuk mencetak lembar ujian
+                esai dan tulis manual jawaban Anda.</div>
+        </a>
+    </main>
+
+</body>
+
+</html>
