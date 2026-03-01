@@ -1075,19 +1075,21 @@
             quizQuestions = filter === 'all' ? bank : bank.filter(q => q.cat === filter);
             buildPrintFriendlyContent();
 
-            // 1. Scroll to top
             window.scrollTo(0, 0);
 
             const element = document.getElementById('print-only-content');
 
-            // 2. Use position:fixed (not absolute!) so height is correctly calculated
-            element.style.display = 'block';
-            element.style.width = '800px';
+            // Make visible (visibility:hidden keeps layout, display:none = height 0)
+            element.style.visibility = 'visible';
             element.style.position = 'fixed';
+            element.style.left = '0';
             element.style.top = '0';
-            element.style.left = '-9999px'; // Off-screen so user doesn't see it
+            element.style.width = '800px';
             element.style.zIndex = '9999';
-            element.style.backgroundColor = '#ffffff';
+            element.style.background = '#fff';
+
+            // Force browser reflow so scrollHeight is accurate
+            void element.offsetHeight;
 
             var opt = {
                 margin: [10, 10, 20, 10],
@@ -1099,20 +1101,21 @@
                     logging: false,
                     backgroundColor: '#ffffff',
                     scrollY: 0,
-                    windowWidth: 800  // Fixed 800px to prevent mobile clipping
+                    windowWidth: 800,
+                    windowHeight: element.scrollHeight
                 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                pagebreak: { mode: ['css', 'legacy'] }
             };
 
-            // 3. Short delay so browser paints the element, then generate
             setTimeout(() => {
                 html2pdf().set(opt).from(element).save().then(() => {
-                    element.style.display = 'none';
-                    element.style.position = '';
-                    element.style.left = '';
+                    element.style.visibility = 'hidden';
+                    element.style.zIndex = '-1';
+                    element.style.position = 'fixed';
+                    element.style.left = '0';
                 });
-            }, 1000);
+            }, 50);
         }
 
         // --- PWA Service Worker Registration ---
@@ -1124,7 +1127,7 @@
     </script>
     <!-- Hidden Print Append area for PDF generation at root level -->
     <div id="print-only-content"
-        style="display:none; position: absolute; left: 0; top: 0; background: #fff; z-index: 9999;"></div>
+        style="visibility:hidden; position:fixed; left:0; top:0; width:800px; background:#fff; z-index:-1;"></div>
 </body>
 
 </html>
