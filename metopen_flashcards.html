@@ -723,10 +723,19 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
     <style>
         @page { size: A4; margin: 15mm; }
-        body { margin: 0; padding: 0; background: #fff; font-family: 'DM Sans', sans-serif; color: #111; line-height: 1.6; }
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background: #fff; 
+            font-family: 'DM Sans', sans-serif; 
+            color: #111; 
+            line-height: 1.6; 
+            overflow: visible !important;
+        }
         .page-break { page-break-before: always; }
         h1, h2 { font-family: 'Playfair Display', serif; }
-        .print-container { width: 100%; max-width: 800px; margin: 0 auto; }
+        .print-container { width: 100%; max-width: 800px; margin: 0 auto; overflow: visible !important; }
+        * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     </style>
 </head>
 <body>
@@ -734,12 +743,19 @@
         ${printableHtml}
     </div>
     <script>
-        window.onload = () => {
+        function doPrint() {
             window.focus();
             setTimeout(() => {
                 window.print();
+                // window.close();
             }, 500);
-        };
+        }
+
+        if (document.fonts) {
+            document.fonts.ready.then(doPrint);
+        } else {
+            window.onload = doPrint;
+        }
     <` + `/script>
 </body>
 </html>
