@@ -777,16 +777,26 @@
         function autoSubmitWrong() {
             playThud();
             alert("Waktu habis! Jawaban dianggap salah.");
-            // Mark an invalid option
             const inputField = document.getElementById('answer-input');
             if (inputField) inputField.value = "[WAKTU HABIS]";
-            inputField.disabled = true;
+            if (inputField) inputField.disabled = true;
+
+            // Save with timeout flag
+            const q = quizQuestions[currentIdx];
+            quizHistory.push({
+                question: q,
+                selected: "[WAKTU HABIS]",
+                isCorrect: false,
+                timeout: true,
+                usedHint: q._usedHint || false
+            });
 
             setTimeout(() => {
                 if (currentIdx === quizQuestions.length - 1) {
-                    finishQuiz();
+                    finishQuiz(true); // skip checkAndSave
                 } else {
-                    nextQuestion();
+                    currentIdx++;
+                    renderQuestion(currentIdx);
                 }
             }, 1000);
         }
@@ -858,9 +868,9 @@
             }
         }
 
-        function finishQuiz() {
-            if (checkAndSaveCurrent()) {
-
+        function finishQuiz(fromTimeout = false) {
+            let ready = fromTimeout ? true : checkAndSaveCurrent();
+            if (ready) {
                 // SAVE HIGH SCORE
                 const maxSavedQuiz = parseInt(localStorage.getItem('metopen_max_quiz_isian')) || 0;
                 if (score > maxSavedQuiz) {
@@ -993,6 +1003,7 @@
         `;
             });
 
+            list.innerHTML = cardsHtml;
         }
 
         function buildPrintFriendlyContent() {
