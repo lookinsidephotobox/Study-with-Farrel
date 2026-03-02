@@ -618,11 +618,11 @@
   </header>
 
   <nav id="nav">
-    <button class="active" onclick="show('p1')"><span class="nav-icon">1️⃣</span> P1: Konsep Dasar</button>
-    <button onclick="show('p2')"><span class="nav-icon">2️⃣</span> P2: Kuantum vs Kualitatif</button>
-    <button onclick="show('p3')"><span class="nav-icon">3️⃣</span> P3: Populasi & Sampel</button>
-    <button onclick="show('p4')"><span class="nav-icon">4️⃣</span> P4: Variabel & Paradigma</button>
-    <button onclick="show('p5')"><span class="nav-icon">5️⃣</span> P5: Data & Pengukuran</button>
+    <button class="active" onclick="showSection('p1')"><span class="nav-icon">1️⃣</span> P1: Konsep Dasar</button>
+    <button onclick="showSection('p2')"><span class="nav-icon">2️⃣</span> P2: Kuantum vs Kualitatif</button>
+    <button onclick="showSection('p3')"><span class="nav-icon">3️⃣</span> P3: Populasi & Sampel</button>
+    <button onclick="showSection('p4')"><span class="nav-icon">4️⃣</span> P4: Variabel & Paradigma</button>
+    <button onclick="showSection('p5')"><span class="nav-icon">5️⃣</span> P5: Data & Pengukuran</button>
     <a href="index.html"><span class="nav-icon">🏠</span> Menu Utama</a>
     <a href="Metodologi_Penelitian_Interactive_Study_Guide.pdf" download class="nav-download"><span
         class="nav-icon">📥</span> Download Materi</a>
@@ -1821,7 +1821,6 @@
           btn.classList.add('pinned');
         }
       });
-      renderBookmarks();
     });
 
     function togglePin(cardId) {
@@ -1882,7 +1881,7 @@
       } else {
         // Revert to normal nav
         const activeNav = document.querySelector('nav button.active');
-        if (activeNav) activeNav.click(); // re-trigger the show() function
+        if (activeNav) activeNav.click(); // re-trigger the showSection() function
         return;
       }
 
@@ -1904,9 +1903,9 @@
     function showSection(id) {
       // Clear search
       const searchBox = document.getElementById('search-bar');
-      if (searchBox.value !== '') {
+      if (searchBox && searchBox.value !== '') {
         searchBox.value = '';
-        performSearch(); // reset visibility
+        if (typeof performSearch === 'function') performSearch(); // reset visibility
       }
 
       document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -1916,7 +1915,7 @@
 
       document.getElementById(id).classList.add('active');
 
-      const btnMap = { 'bookmarks': 0, 'p1': 1, 'p2': 2, 'p3': 3, 'p4': 4, 'p5': 5 };
+      const btnMap = { 'p1': 0, 'p2': 1, 'p3': 2, 'p4': 3, 'p5': 4 };
       document.querySelectorAll('nav button')[btnMap[id]].classList.add('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
